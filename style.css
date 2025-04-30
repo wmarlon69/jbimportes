@@ -1,0 +1,231 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #181818; /* preto */
+    color: #fffbe7;      /* dourado claro para texto */
+}
+
+header {
+    background: linear-gradient(90deg, #bfa046 0%, #ff9800 100%); /* dourado para laranja */
+    text-align: center;
+    padding: 40px 20px 20px 20px;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2.5rem;
+    color: #fffbe7; /* dourado claro */
+}
+
+header p {
+    font-size: 1.2rem;
+    margin: 10px 0 20px 0;
+    color: #fffbe7;
+}
+
+nav {
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.filtro {
+    background: #fffbe7;      /* dourado claro */
+    color: #181818;           /* preto */
+    border: 1px solid #ff9800;/* laranja */
+    border-radius: 20px;
+    padding: 8px 20px;
+    margin: 5px 5px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.filtro.active,
+.filtro:hover {
+    background: #181818; /* preto */
+    color: #ff9800;      /* laranja */
+    border: 1px solid #bfa046; /* dourado */
+}
+
+.produtos {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    padding: 40px 10px;
+}
+
+.produto {
+    background: #222; /* preto mais claro */
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(191,160,70,0.10);
+    padding: 20px;
+    text-align: center;
+    width: 250px;
+    transition: transform 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.produto:hover {
+    transform: translateY(-8px) scale(1.04);
+    box-shadow: 0 0 16px #ff980055;
+}
+
+.produto img {
+    width: 100%;
+    max-width: 200px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    border: 2px solid #bfa046; /* dourado */
+}
+
+.produto h2 {
+    font-size: 1.1rem;
+    margin: 10px 0 5px 0;
+    color: #ff9800; /* laranja */
+}
+
+.produto p {
+    color: #bfa046; /* dourado */
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.comprar-btn {
+    background: linear-gradient(90deg, #ff9800 0%, #bfa046 100%);
+    color: #181818;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-top: 10px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.comprar-btn:hover {
+    background: #181818;
+    color: #ff9800;
+    border: 1px solid #bfa046;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    background: #181818;
+    color: #bfa046;
+    margin-top: 40px;
+}
+
+/* Modal responsivo */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: #222;
+    padding: 30px 20px;
+    border-radius: 10px;
+    text-align: center;
+    position: relative;
+    min-width: 280px;
+    max-width: 90vw;
+    color: #fffbe7;
+}
+
+.fechar {
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #ff9800;
+}
+
+#tamanho {
+    margin: 15px 0;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: 1px solid #bfa046;
+    background: #181818;
+    color: #fffbe7;
+}
+
+#finalizar-compra {
+    background: linear-gradient(90deg, #ff9800 0%, #bfa046 100%);
+    color: #181818;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-top: 10px;
+    transition: background 0.2s, color 0.2s;
+}
+
+#finalizar-compra:hover {
+    background: #181818;
+    color: #ff9800;
+    border: 1px solid #bfa046;
+}
+
+/* Responsividade */
+@media (max-width: 900px) {
+    .produtos {
+        gap: 20px;
+    }
+    .produto {
+        width: 45vw;
+        min-width: 180px;
+        max-width: 300px;
+    }
+}
+
+@media (max-width: 600px) {
+    header h1 {
+        font-size: 1.5rem;
+    }
+    .produtos {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+        padding: 20px 5px;
+    }
+    .produto {
+        width: 90vw;
+        min-width: 140px;
+        max-width: 98vw;
+        padding: 15px 5px;
+    }
+    .modal-content {
+        padding: 15px 5px;
+    }
+}
+
+.btn-voltar {
+    background: #181818;
+    color: #fffbe7;
+    border: 1px solid #bfa046;
+    border-radius: 20px;
+    padding: 8px 20px;
+    margin-left: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+    display: inline-block;
+}
+.btn-voltar:hover {
+    background: #bfa046;
+    color: #181818;
+}
+
+

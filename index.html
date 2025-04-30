@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loja Fashion</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1> JB IMPORTES</h1>
+        <p>Descubra as últimas tendências em moda!</p>
+        <nav>
+            <button class="filtro" data-categoria="tudo">Tudo</button>
+            <button class="filtro" data-categoria="feminino">Feminino</button>
+            <button class="filtro" data-categoria="masculino">Masculino</button>
+            <button class="filtro" data-categoria="infantil">Infantil</button>
+            <a href="page.html" class="btn-voltar">Voltar</a>
+        </nav>
+    </header>
+
+
+    <main>
+        <section id="produtos" class="produtos"></section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 jb importes. Todos os direitos reservados.</p>
+    </footer>
+
+    <div id="modal-compra" class="modal">
+        <div class="modal-content">
+            <span id="fechar-modal" class="fechar">&times;</span>
+            <h2 id="modal-produto-nome"></h2>
+            <img id="modal-produto-img" src="" alt="" style="width: 100px; border-radius: 8px;">
+            <p id="modal-produto-preco"></p>
+            <label for="tamanho">Escolha o tamanho:</label>
+            <select id="tamanho">
+                <option value="">Selecione</option>
+                <option value="P">P</option>
+                <option value="M">M</option>
+                <option value="G">G</option>
+                <option value="GG">GG</option>
+            </select>
+            <button id="finalizar-compra">Finalizar Compra</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
