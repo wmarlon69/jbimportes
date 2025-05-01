@@ -41,7 +41,55 @@ const produtos = [
         preco: "R$ 51,90",
         categoria: "feminino",
         imagem: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80"
-    }
+    },
+    {
+        nome: "Saia Jeans",
+        preco: "R$ 51,90",
+        categoria: "feminino",
+        imagem: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80"
+    },
+    {
+        nome: "Saia Jeans",
+        preco: "R$ 51,90",
+        categoria: "feminino",
+        imagem: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80"
+    },
+    {
+        nome: "Saia Jeans",
+        preco: "R$ 51,90",
+        categoria: "feminino",
+        imagem: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80"
+    },
+    {
+        nome: "Saia Jeans",
+        preco: "R$ 51,90",
+        categoria: "feminino",
+        imagem: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80"
+    },
+    {
+        nome: "Saia Jeans",
+        preco: "R$ 51,90",
+        categoria: "feminino",
+        imagem: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80"
+    },
+    {
+        nome: "Saia Jeans",
+        preco: "R$ 51,90",
+        categoria: "feminino",
+        imagem: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80"
+    },
+    {
+        nome: "Saia Jeans",
+        preco: "R$ 51,90",
+        categoria: "feminino",
+        imagem: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80"
+    },
+    {
+        nome: "Saia Jeans",
+        preco: "R$ 51,90",
+        categoria: "feminino",
+        imagem: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80"
+    },
     
 ];
 
@@ -60,7 +108,7 @@ function abrirModal(produto) {
             return;
         }
         // Substitua o número abaixo pelo seu número do WhatsApp
-        const numero = '5583991719886';
+        const numero = '5583996695516';
         const mensagem = encodeURIComponent(`Olá! Quero comprar: ${produto.nome} - Tamanho: ${tamanho}`);
         window.open(`https://wa.me/${numero}?text=${mensagem}`, '_blank');
     };
@@ -75,20 +123,55 @@ window.onclick = function(event) {
     }
 };
 
-function renderizarProdutos(categoria) {
-    const container = document.getElementById('produtos');
-    container.innerHTML = '';
+let categoriaSelecionada = 'tudo';
+let precoSelecionado = 'tudo';
+
+function filtrarProdutos() {
     let lista = produtos;
-    if (categoria && categoria !== 'tudo') {
-        lista = produtos.filter(p => p.categoria === categoria);
+
+    // Filtro por categoria
+    if (categoriaSelecionada !== 'tudo') {
+        lista = lista.filter(p => p.categoria === categoriaSelecionada);
     }
+
+    // Filtro por preço
+    if (precoSelecionado === "ate50") {
+        lista = lista.filter(p => parseFloat(p.preco.replace("R$", "").replace(",", ".")) <= 50);
+    } else if (precoSelecionado === "ate100") {
+        lista = lista.filter(p => parseFloat(p.preco.replace("R$", "").replace(",", ".")) <= 100);
+    } else if (precoSelecionado === "acima100") {
+        lista = lista.filter(p => parseFloat(p.preco.replace("R$", "").replace(",", ".")) > 100);
+    }
+
+    renderizarProdutosFiltrados(lista);
+}
+
+document.querySelectorAll('.filtro').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.filtro').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        categoriaSelecionada = this.dataset.categoria;
+        filtrarProdutos();
+    });
+});
+
+document.getElementById("faixa-preco").addEventListener("change", function() {
+    precoSelecionado = this.value;
+    filtrarProdutos();
+});
+
+function renderizarProdutosFiltrados(lista) {
+    const container = document.getElementById("produtos");
+    container.innerHTML = "";
+
     if (lista.length === 0) {
         container.innerHTML = '<p>Nenhum produto encontrado.</p>';
         return;
     }
+
     lista.forEach(produto => {
-        const div = document.createElement('div');
-        div.className = 'produto';
+        const div = document.createElement("div");
+        div.className = "produto";
         div.innerHTML = `
             <img src="${produto.imagem}" alt="${produto.nome}">
             <h2>${produto.nome}</h2>
@@ -102,14 +185,6 @@ function renderizarProdutos(categoria) {
     });
 }
 
-document.querySelectorAll('.filtro').forEach(btn => {
-    btn.addEventListener('click', function() {
-        document.querySelectorAll('.filtro').forEach(b => b.classList.remove('active'));
-        this.classList.add('active');
-        renderizarProdutos(this.dataset.categoria);
-    });
-});
-
 // Inicialização
-renderizarProdutos('tudo');
 document.querySelector('.filtro[data-categoria="tudo"]').classList.add('active');
+filtrarProdutos();
