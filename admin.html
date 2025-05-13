@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel Administrativo - JB IMPORTES</title>
+    <link rel="stylesheet" href="/style.css">
     <style>
         * {
             box-sizing: border-box;
@@ -265,8 +266,9 @@
     </div>
 
     <!-- Carregando arquivo de configuração -->
-    <script src="config.js"></script>
-    <script src="db-remote.js"></script>
+    <script src="/config.js"></script>
+    <script src="/db-remote.js"></script>
+    
     <script>
         // Verificar autenticação
         function verificarAutenticacao() {
@@ -527,6 +529,31 @@
         document.addEventListener('DOMContentLoaded', () => {
             verificarAutenticacao();
         });
+    </script>
+    
+    <!-- Script para verificar se o CSS e JS foram carregados corretamente -->
+    <script>
+        function verificarRecursos() {
+            // Verificar se o CSS está carregado
+            const styleLoaded = Array.from(document.styleSheets).some(sheet => {
+                try {
+                    return sheet.href && sheet.href.includes('style.css');
+                } catch (e) {
+                    return false;
+                }
+            });
+            
+            if (!styleLoaded) {
+                console.warn('CSS não carregado. Tentando novamente...');
+                const link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = '/style.css?nocache=' + new Date().getTime();
+                document.head.appendChild(link);
+            }
+        }
+        
+        // Verificar após 2 segundos
+        setTimeout(verificarRecursos, 2000);
     </script>
 </body>
 </html> 
