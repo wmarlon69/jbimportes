@@ -5,8 +5,13 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Importar o banco de dados SQL
-const db = require('./db-sql');
+// Definir ambiente
+const isProduction = process.env.NODE_ENV === 'production';
+
+// Importar o banco de dados adequado
+let db;
+// Usar o MongoDB local que você instalou
+db = require('./db-mongo-local');
 
 // Middleware
 app.use(cors());
@@ -74,7 +79,7 @@ app.post('/api/produtos', async (req, res) => {
 
 app.put('/api/produtos/:id', async (req, res) => {
     try {
-        const id = parseInt(req.params.id);
+        const id = req.params.id;
         const produtoAtualizado = req.body;
         
         // Validar dados
@@ -105,7 +110,7 @@ app.put('/api/produtos/:id', async (req, res) => {
 
 app.delete('/api/produtos/:id', async (req, res) => {
     try {
-        const id = parseInt(req.params.id);
+        const id = req.params.id;
         
         // Remover do banco de dados
         const removido = await db.remover(id);
@@ -146,8 +151,14 @@ app.get('/api/produtos/preco/:faixa', async (req, res) => {
 app.get('/api/status', (req, res) => {
     res.json({ 
         status: 'online',
-        dbStatus: dbInitialized ? 'conectado' : 'desconectado' 
+        dbStatus: dbInitialized ? 'conectado' : 'desconectado',
+        dbType: 'MongoDB local'
     });
+});
+
+// Rota para a página raiz
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // Inicializar banco de dados e iniciar servidor
@@ -156,14 +167,18 @@ async function iniciarServidor() {
     await initDB();
     
     // Iniciar o servidor de qualquer forma
-    app.listen(PORT, () => {
+    app.listen(PORT, '0.0.0.0', () => {
         console.log(`Servidor rodando na porta ${PORT}`);
         console.log(`Acesse http://localhost:${PORT} para visualizar a loja`);
+        console.log(`Para acessar de outros dispositivos na rede, use:`);
+        console.log(`http://192.168.1.2:${PORT}`);
         console.log(`Status do banco de dados: ${dbInitialized ? 'CONECTADO' : 'DESCONECTADO'}`);
+        console.log(`Tipo de banco de dados: MongoDB local`);
         
         if (!dbInitialized) {
             console.log('O servidor está rodando mas o banco de dados não foi inicializado.');
             console.log('Algumas operações podem não funcionar corretamente.');
+            console.log('Verifique se o MongoDB está rodando com o comando: mongod');
         }
     });
 }

@@ -1,0 +1,77 @@
+==========================================================
+  SOLUÇÃO PARA ACESSAR JB IMPORTES EM OUTROS DISPOSITIVOS
+==========================================================
+
+Se o site está funcionando apenas no computador principal mas não
+em outros dispositivos na rede, siga estas instruções:
+
+---------------------------------------------------------
+PASSO 1: VERIFICAR SE O SERVIDOR ESTÁ RODANDO
+---------------------------------------------------------
+
+1. No computador principal (onde está o código):
+   - Verifique se o servidor está rodando
+   - Execute o servidor novamente se necessário:
+     ```
+     npm start
+     ```
+   - O terminal deve mostrar:
+     "Servidor rodando na porta 3000"
+
+---------------------------------------------------------
+PASSO 2: VERIFICAR O FIREWALL DO WINDOWS
+---------------------------------------------------------
+
+1. Execute o arquivo "abrir-firewall.bat" com clique duplo
+   - Este script abrirá a porta 3000 no firewall do Windows
+   - Execute como administrador se solicitado
+
+2. Se preferir abrir manualmente:
+   - Painel de Controle → Sistema e Segurança → Firewall do Windows
+   - Configurações avançadas → Regras de Entrada → Nova Regra
+   - Selecione "Porta" → "TCP" e digite "3000"
+   - Selecione "Permitir a conexão" → Dê o nome "JB Importes"
+
+---------------------------------------------------------
+PASSO 3: ACESSAR DE OUTROS DISPOSITIVOS
+---------------------------------------------------------
+
+1. Em outros dispositivos (celulares, tablets, computadores):
+   - Certifique-se que estão na mesma rede WiFi/LAN
+   - Abra o navegador
+   - Digite o endereço:
+     ```
+     http://192.168.1.2:3000
+     ```
+   - Para o painel administrativo:
+     ```
+     http://192.168.1.2:3000/admin.html
+     ```
+
+---------------------------------------------------------
+SOLUÇÕES PARA PROBLEMAS COMUNS
+---------------------------------------------------------
+
+PROBLEMA: Site não carrega em outros dispositivos
+SOLUÇÃO:
+- Verifique se o número IP está correto (192.168.1.2)
+- Tente desativar temporariamente o firewall no Windows
+- Certifique-se que os dispositivos estão na mesma rede
+
+PROBLEMA: "Este site não pode ser acessado"
+SOLUÇÃO:
+- Verifique se o servidor está rodando
+- Tente reiniciar o servidor
+- Verifique se digitou o endereço corretamente
+
+PROBLEMA: O servidor não inicia
+SOLUÇÃO:
+- Certifique-se que o MySQL está rodando
+- Verifique se outro programa está usando a porta 3000
+- Se necessário, altere a porta no arquivo server.js
+
+---------------------------------------------------------
+
+Para qualquer outro problema, entre em contato conosco.
+
+========================================================= 
