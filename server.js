@@ -5,6 +5,9 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Importar o banco de dados SQL
+const db = require('./db-sql');
+
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -13,127 +16,86 @@ app.use(express.static('./'));
 // Middleware específico para servir imagens
 app.use('/img', express.static(path.join(__dirname, 'img')));
 
-// Arquivo de dados (simulando banco de dados)
-const PRODUTOS_FILE = path.join(__dirname, 'produtos.json');
+// Variável para armazenar o status da inicialização do banco de dados
+let dbInitialized = false;
 
-// Inicializar arquivo de produtos se não existir
-if (!fs.existsSync(PRODUTOS_FILE)) {
-    const produtosIniciais = [
-        {
-            id: 1,
-            nome: "Camiseta Básica",
-            preco: 49.90,
-            categoria: "masculino",
-            imagem: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80"
-        },
-        {
-            id: 2,
-            nome: "Vestido Floral",
-            preco: 89.90,
-            categoria: "feminino",
-            imagem: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=400&q=80"
-        },
-        {
-            id: 3,
-            nome: "Calça Jeans",
-            preco: 99.90,
-            categoria: "masculino",
-            imagem: "https://images.unsplash.com/photo-1469398715555-76331a6c7fa0?auto=format&fit=crop&w=400&q=80"
-        },
-        {
-            id: 4,
-            nome: "wmarlon",
-            preco: 999.99,
-            categoria: "masculino",
-            imagem: "img/wm.jpg"
-        },
-        {
-            id: 5,
-            nome: "Saia Jeans",
-            preco: 59.90,
-            categoria: "feminino",
-            imagem: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80"
-        },
-        {
-            id: 6,
-            nome: "Saia Jeans Infantil",
-            preco: 5.90,
-            categoria: "infantil",
-            imagem: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80"
-        }
-    ];
-    fs.writeFileSync(PRODUTOS_FILE, JSON.stringify(produtosIniciais, null, 2));
+// Inicializar o banco de dados
+async function initDB() {
+    try {
+        await db.init();
+        console.log('Banco de dados inicializado com sucesso');
+        dbInitialized = true;
+    } catch (error) {
+        console.error('Erro ao inicializar banco de dados:', error);
+        // Continuar a inicialização do servidor mesmo que o banco de dados falhe
+    }
 }
 
-// Funções do banco de dados
-function lerProdutos() {
-    const dados = fs.readFileSync(PRODUTOS_FILE, 'utf8');
-    return JSON.parse(dados);
-}
-
-function salvarProdutos(produtos) {
-    fs.writeFileSync(PRODUTOS_FILE, JSON.stringify(produtos, null, 2));
-}
-
-function gerarId(produtos) {
-    if (!produtos.length) return 1;
-    return Math.max(...produtos.map(p => p.id)) + 1;
+// Middleware para verificar se o banco de dados está inicializado
+function verificarDB(req, res, next) {
+    if (!dbInitialized) {
+        return res.status(503).json({ erro: 'Banco de dados não inicializado. Tente novamente em instantes.' });
+    }
+    next();
 }
 
 // Rotas para produtos
-app.get('/api/produtos', (req, res) => {
+app.get('/api/produtos', async (req, res) => {
     try {
-        const produtos = lerProdutos();
+        const produtos = await db.obterTodos();
         res.json(produtos);
     } catch (error) {
         res.status(500).json({ erro: 'Erro ao ler produtos', detalhes: error.message });
     }
 });
 
-app.post('/api/produtos', (req, res) => {
+app.post('/api/produtos', async (req, res) => {
     try {
-        const produtos = lerProdutos();
         const novoProduto = req.body;
         
         // Validar dados
-        if (!novoProduto.nome || !novoProduto.preco || !novoProduto.categoria || !novoProduto.imagem) {
+        if (!novoProduto.nome || !novoProduto.preco || !novoProduto.categoria) {
             return res.status(400).json({ erro: 'Dados incompletos' });
         }
         
-        // Adicionar ID
-        novoProduto.id = gerarId(produtos);
+        // Garantir que a imagem existe
+        if (!novoProduto.imagem) {
+            novoProduto.imagem = 'img/imagem-indisponivel.jpg';
+        }
         
-        // Adicionar ao array e salvar
-        produtos.push(novoProduto);
-        salvarProdutos(produtos);
+        // Adicionar ao banco de dados
+        const produtoAdicionado = await db.adicionar(novoProduto);
         
-        res.status(201).json(novoProduto);
+        res.status(201).json(produtoAdicionado);
     } catch (error) {
         res.status(500).json({ erro: 'Erro ao criar produto', detalhes: error.message });
     }
 });
 
-app.put('/api/produtos/:id', (req, res) => {
+app.put('/api/produtos/:id', async (req, res) => {
     try {
         const id = parseInt(req.params.id);
         const produtoAtualizado = req.body;
         
         // Validar dados
-        if (!produtoAtualizado.nome || !produtoAtualizado.preco || !produtoAtualizado.categoria || !produtoAtualizado.imagem) {
+        if (!produtoAtualizado.nome || !produtoAtualizado.preco || !produtoAtualizado.categoria) {
             return res.status(400).json({ erro: 'Dados incompletos' });
         }
         
-        let produtos = lerProdutos();
-        const index = produtos.findIndex(p => p.id === id);
-        
-        if (index === -1) {
-            return res.status(404).json({ erro: 'Produto não encontrado' });
+        // Garantir que a imagem existe
+        if (!produtoAtualizado.imagem) {
+            produtoAtualizado.imagem = 'img/imagem-indisponivel.jpg';
         }
         
-        // Atualizar produto
+        // Garantir que o ID está correto
         produtoAtualizado.id = id;
-        produtos[index] = produtoAtualizado;
-        salvarProdutos(produtos);
+        
+        // Atualizar no banco de dados
+        const resultado = await db.atualizar(produtoAtualizado);
+        
+        if (!resultado) {
+            return res.status(404).json({ erro: 'Produto não encontrado' });
+        }
         
         res.json(produtoAtualizado);
     } catch (error) {
@@ -141,19 +103,16 @@ app.put('/api/produtos/:id', (req, res) => {
     }
 });
 
-app.delete('/api/produtos/:id', (req, res) => {
+app.delete('/api/produtos/:id', async (req, res) => {
     try {
         const id = parseInt(req.params.id);
-        let produtos = lerProdutos();
-        const produtoExiste = produtos.some(p => p.id === id);
         
-        if (!produtoExiste) {
+        // Remover do banco de dados
+        const removido = await db.remover(id);
+        
+        if (!removido) {
             return res.status(404).json({ erro: 'Produto não encontrado' });
         }
-        
-        // Remover produto
-        produtos = produtos.filter(p => p.id !== id);
-        salvarProdutos(produtos);
         
         res.status(204).end();
     } catch (error) {
@@ -162,16 +121,10 @@ app.delete('/api/produtos/:id', (req, res) => {
 });
 
 // Filtrar por categoria
-app.get('/api/produtos/categoria/:categoria', (req, res) => {
+app.get('/api/produtos/categoria/:categoria', async (req, res) => {
     try {
         const categoria = req.params.categoria;
-        const produtos = lerProdutos();
-        
-        if (categoria === 'tudo') {
-            return res.json(produtos);
-        }
-        
-        const produtosFiltrados = produtos.filter(p => p.categoria === categoria);
+        const produtosFiltrados = await db.filtrarPorCategoria(categoria);
         res.json(produtosFiltrados);
     } catch (error) {
         res.status(500).json({ erro: 'Erro ao filtrar produtos', detalhes: error.message });
@@ -179,33 +132,40 @@ app.get('/api/produtos/categoria/:categoria', (req, res) => {
 });
 
 // Filtrar por preço
-app.get('/api/produtos/preco/:faixa', (req, res) => {
+app.get('/api/produtos/preco/:faixa', async (req, res) => {
     try {
         const faixa = req.params.faixa;
-        const produtos = lerProdutos();
-        
-        if (faixa === 'tudo') {
-            return res.json(produtos);
-        }
-        
-        let produtosFiltrados = [];
-        
-        if (faixa === 'ate50') {
-            produtosFiltrados = produtos.filter(p => p.preco <= 50);
-        } else if (faixa === 'ate100') {
-            produtosFiltrados = produtos.filter(p => p.preco <= 100);
-        } else if (faixa === 'acima100') {
-            produtosFiltrados = produtos.filter(p => p.preco > 100);
-        }
-        
+        const produtosFiltrados = await db.filtrarPorPreco(faixa);
         res.json(produtosFiltrados);
     } catch (error) {
         res.status(500).json({ erro: 'Erro ao filtrar produtos', detalhes: error.message });
     }
 });
 
-// Iniciar servidor
-app.listen(PORT, '192.168.1.2', () => {
-    console.log(`Servidor rodando em http://192.168.1.2:${PORT}`);
-    console.log(`Acesse http://192.168.1.2:${PORT} para visualizar a loja`);
-}); 
+// Rota para verificar se o servidor está rodando
+app.get('/api/status', (req, res) => {
+    res.json({ 
+        status: 'online',
+        dbStatus: dbInitialized ? 'conectado' : 'desconectado' 
+    });
+});
+
+// Inicializar banco de dados e iniciar servidor
+async function iniciarServidor() {
+    // Tentar inicializar o banco de dados
+    await initDB();
+    
+    // Iniciar o servidor de qualquer forma
+    app.listen(PORT, () => {
+        console.log(`Servidor rodando na porta ${PORT}`);
+        console.log(`Acesse http://localhost:${PORT} para visualizar a loja`);
+        console.log(`Status do banco de dados: ${dbInitialized ? 'CONECTADO' : 'DESCONECTADO'}`);
+        
+        if (!dbInitialized) {
+            console.log('O servidor está rodando mas o banco de dados não foi inicializado.');
+            console.log('Algumas operações podem não funcionar corretamente.');
+        }
+    });
+}
+
+iniciarServidor(); 

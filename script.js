@@ -43,6 +43,28 @@ function formatarPreco(valor) {
     return `R$ ${valor.toFixed(2).replace('.', ',')}`;
 }
 
+// Função para verificar e corrigir caminhos de imagem
+function verificarCaminhoImagem(imagem) {
+    if (!imagem) return 'img/imagem-indisponivel.jpg';
+    
+    // Se a imagem já contém http ou https, retornar como está
+    if (imagem.startsWith('http://') || imagem.startsWith('https://')) {
+        return imagem;
+    }
+    
+    // Se é um caminho local começando com 'img/', garantir que o caminho está correto
+    if (imagem.startsWith('img/')) {
+        return imagem;
+    }
+    
+    // Se é apenas um nome de arquivo sem o prefixo img/, adicionar o prefixo
+    if (!imagem.includes('/')) {
+        return `img/${imagem}`;
+    }
+    
+    return imagem;
+}
+
 // Função para carregar produtos do banco de dados
 async function carregarProdutos() {
     // Mostrar indicador de carregamento
@@ -80,6 +102,14 @@ async function carregarProdutos() {
             console.warn('Banco de dados não disponível, usando array de produtos estático');
             produtosFiltrados = produtos;
         }
+        
+        // Garantir que todas as imagens têm caminhos válidos
+        produtosFiltrados = produtosFiltrados.map(produto => {
+            return {
+                ...produto,
+                imagem: verificarCaminhoImagem(produto.imagem)
+            };
+        });
         
         return produtosFiltrados;
     } catch (error) {
@@ -121,7 +151,7 @@ function renderizarProdutosFiltrados(lista) {
         div.className = "produto";
         
         // Criar a imagem com tratamento de erro
-        const imgSrc = produto.imagem || '';
+        const imgSrc = verificarCaminhoImagem(produto.imagem);
         
         div.innerHTML = `
             <img src="${imgSrc}" alt="${produto.nome}" onerror="this.onerror=null; this.src='img/imagem-indisponivel.jpg'; this.alt='Imagem indisponível';">
@@ -168,6 +198,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     document.querySelector('.filtro[data-categoria="tudo"]').classList.add('active');
     
+    // Criar um arquivo de imagem indisponível se não existir
+    function criarImagemIndisponivel() {
+        // Verificar se a imagem indisponível existe fazendo uma solicitação
+        fetch('img/imagem-indisponivel.jpg')
+            .then(response => {
+                if (!response.ok) {
+                    console.warn('Imagem indisponível não encontrada. Usando placeholder.');
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao verificar imagem indisponível:', error);
+            });
+    }
+    
+    criarImagemIndisponivel();
+    
     // Carregar dados iniciais
     try {
         if (typeof db !== 'undefined') {
@@ -202,6 +248,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                     preco: 99.90,
                     categoria: "masculino",
                     imagem: "https://images.unsplash.com/photo-1469398715555-76331a6c7fa0?auto=format&fit=crop&w=400&q=80"
+                },
+                {
+                    id: 4,
+                    nome: "WMarlon Special",
+                    preco: 999.99,
+                    categoria: "masculino",
+                    imagem: "img/wm.jpg"
                 }
             ];
         }

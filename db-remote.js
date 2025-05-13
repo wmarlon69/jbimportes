@@ -4,7 +4,7 @@
  */
 
 // URL base da API - altere para seu domínio quando colocar online
-const API_URL = 'http://192.168.1.2:3000/api';
+const API_URL = 'http://localhost:3000/api';
 
 // Objeto do banco de dados
 const db = {

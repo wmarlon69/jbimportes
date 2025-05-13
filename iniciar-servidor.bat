@@ -6,6 +6,9 @@ echo.
 echo Instalando dependencias...
 call npm install
 echo.
+echo Configurando banco de dados MySQL...
+call npm run setup-db
+echo.
 echo Iniciando o servidor...
 echo.
 echo Quando o servidor estiver rodando, acesse:

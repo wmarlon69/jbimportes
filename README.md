@@ -1,71 +1,60 @@
 # JB IMPORTES - Sistema de E-commerce
 
-Sistema de e-commerce para JB IMPORTES, com sistema de banco de dados, catálogo de produtos e painel administrativo.
+## Novo Banco de Dados MySQL
 
-## Funcionalidades
+O sistema agora utiliza MySQL como banco de dados! Siga as instruções abaixo para configurar:
 
-- Exibição de produtos por categoria (feminino, masculino, infantil)
-- Filtros de preço
-- Painel administrativo para gerenciar produtos
-- Sistema de banco de dados usando localStorage (modo offline) e servidor Node.js (modo online)
-- Sistema de formulário de compra integrado com WhatsApp
+1. Instale o MySQL Server (https://dev.mysql.com/downloads/mysql/)
+2. Verifique se o MySQL está rodando
+3. Configure o banco de dados:
+   ```
+   npm run setup-db
+   ```
+4. Inicie o servidor:
+   ```
+   npm start
+   ```
 
-## Instruções para Instalação
+## Instalação Rápida
 
-1. Certifique-se de ter o [Node.js](https://nodejs.org/) instalado (versão 14 ou superior)
-2. Baixe ou clone este repositório
-3. Abra um terminal na pasta do projeto
-4. Execute `npm install` para instalar as dependências
-5. Execute `npm start` ou use o arquivo `iniciar-servidor.bat` para iniciar o servidor
-6. Acesse `http://localhost:3000` no navegador
+1. Instale o [Node.js](https://nodejs.org/)
+2. Instale o [MySQL](https://dev.mysql.com/downloads/mysql/)
+3. Execute no terminal:
+   ```
+   npm install
+   npm run setup-db
+   npm start
+   ```
+4. Acesse http://localhost:3000 no navegador
 
-## Acesso ao Painel Administrativo
+## Painel Admin
 
-- Acesse `http://localhost:3000/admin.html`
-- Senha de acesso: `123456`
+- URL: http://localhost:3000/admin.html
+- Senha: 123456
 
-## Estrutura de Arquivos
+## Solução para Imagens que Não Aparecem
 
-- `index.html` - Página principal da loja
-- `admin.html` - Painel administrativo
-- `script.js` - Código JavaScript para a página principal
-- `server.js` - Servidor Node.js com API REST
-- `db-remote.js` - Cliente para conectar ao banco de dados remoto
-- `config.js` - Configurações do sistema
-- `produtos.json` - Arquivo onde os produtos são armazenados (criado automaticamente)
+- Coloque as imagens na pasta `img/`
+- Use links https:// válidos
+- Recarregue a página após fazer alterações
 
-## Soluções para Problemas Comuns
+## Usando na Rede Local
 
-### Produtos não aparecem para outros usuários
+- Acesse pelo IP do servidor: http://IP_DO_SERVIDOR:3000
 
-Para que os produtos adicionados apareçam para todos os usuários:
+## Configuração MySQL Avançada
 
-1. Certifique-se que o servidor Node.js está rodando (use o arquivo `iniciar-servidor.bat`)
-2. Verifique que todos os usuários estão acessando através do endereço do servidor (http://localhost:3000)
-3. Se estiver usando em rede local, substitua "localhost" pelo endereço IP do servidor
-4. O arquivo `produtos.json` deve ter permissões de escrita para o servidor
-5. Após adicionar um produto, os outros usuários precisam recarregar a página (F5)
+Se você tem uma senha para o MySQL ou deseja usar outro usuário:
 
-### Imagens não aparecem
-
-- Verifique se os caminhos das imagens estão corretos
-- Certifique-se de que as imagens foram salvas na pasta `img/`
-- Para imagens externas, certifique-se de que a URL está correta e acessível
-
-### Erro "EADDRINUSE"
-
-Se ao iniciar o servidor aparecer o erro "EADDRINUSE", significa que a porta 3000 já está sendo usada. Você pode:
-
-1. Encerrar o processo que está usando a porta 3000, ou
-2. Alterar a porta no arquivo `server.js` mudando `const PORT = process.env.PORT || 3000;` para outra porta, como 3001
-
-### Servidor fechou inesperadamente
-
-Se o servidor parar de funcionar ou fechar inesperadamente, reinicie-o com o comando:
-```
-npm start
-```
-
-## Desenvolvedores
-
-Este projeto foi desenvolvido por JB IMPORTES. 
+1. Edite os arquivos `db-sql.js` e `setup-db.js`
+2. Procure pelas configurações de conexão:
+   ```javascript
+   const dbConfig = {
+     host: 'localhost',
+     user: 'root',      // Altere para seu usuário
+     password: '',      // Coloque sua senha
+     database: 'jbimportes'
+   };
+   ```
+3. Atualize os valores conforme necessário
+4. Execute novamente `npm run setup-db` 
