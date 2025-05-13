@@ -1,103 +1,11 @@
-const produtos = [
-    {
-        nome: "Camiseta Básica",
-        preco: "R$ 49,90",
-        categoria: "masculino",
-        imagem: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80"
-    },
-    {
-        nome: "Vestido Floral",
-        preco: "R$ 89,90",
-        categoria: "feminino",
-        imagem: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=400&q=80"
-    },
-    {
-        nome: "Calça Jeans",
-        preco: "R$ 99,90",
-        categoria: "masculino",
-        imagem: "https://imags.unsplash.com/photo-1469398715555-76331a6c7fa0?auto=format&fit=crop&w=400&q=80"
-    },
-    {
-        nome: "wmarlon",
-        preco: "R$ 999,99",
-        categoria: "masculino",
-        imagem: "img/wm.jpg"
-    },
-    {
-        nome: "Saia Jeans",
-        preco: "R$ 59,90",
-        categoria: "feminino",
-        imagem: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80"
-    },
-    {
-        nome: "Saia Jeans",
-        preco: "R$ 5,90",
-        categoria: "infantil",
-        imagem: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80"
-    },
-
-    {
-        nome: "Saia Jeans",
-        preco: "R$ 51,90",
-        categoria: "feminino",
-        imagem: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80"
-    },
-    {
-        nome: "Saia Jeans",
-        preco: "R$ 51,90",
-        categoria: "feminino",
-        imagem: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80"
-    },
-    {
-        nome: "Saia Jeans",
-        preco: "R$ 51,90",
-        categoria: "feminino",
-        imagem: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80"
-    },
-    {
-        nome: "Saia Jeans",
-        preco: "R$ 51,90",
-        categoria: "feminino",
-        imagem: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80"
-    },
-    {
-        nome: "Saia Jeans",
-        preco: "R$ 51,90",
-        categoria: "feminino",
-        imagem: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80"
-    },
-    {
-        nome: "Saia Jeans",
-        preco: "R$ 51,90",
-        categoria: "feminino",
-        imagem: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80"
-    },
-    {
-        nome: "Saia Jeans",
-        preco: "R$ 51,90",
-        categoria: "feminino",
-        imagem: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80"
-    },
-    {
-        nome: "Saia Jeans",
-        preco: "R$ 51,90",
-        categoria: "feminino",
-        imagem: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80"
-    },
-    {
-        nome: "Saia Jeans",
-        preco: "R$ 51,90",
-        categoria: "feminino",
-        imagem: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80"
-    },
-    
-];
+// Array de produtos (será substituído pelos dados do banco)
+let produtos = [];
 
 function abrirModal(produto) {
     document.getElementById('modal-produto-nome').textContent = produto.nome;
     document.getElementById('modal-produto-img').src = produto.imagem;
     document.getElementById('modal-produto-img').alt = produto.nome;
-    document.getElementById('modal-produto-preco').textContent = produto.preco;
+    document.getElementById('modal-produto-preco').textContent = formatarPreco(produto.preco);
     document.getElementById('tamanho').value = "";
     document.getElementById('modal-compra').style.display = 'flex';
 
@@ -126,24 +34,49 @@ window.onclick = function(event) {
 let categoriaSelecionada = 'tudo';
 let precoSelecionado = 'tudo';
 
+// Função para formatar o preço
+function formatarPreco(valor) {
+    return `R$ ${valor.toFixed(2).replace('.', ',')}`;
+}
+
+// Função para carregar produtos do banco de dados
+function carregarProdutos() {
+    // Verificar se o banco de dados está disponível
+    if (typeof db !== 'undefined') {
+        // Usar o banco de dados
+        if (categoriaSelecionada !== 'tudo' && precoSelecionado !== 'tudo') {
+            // Filtrar por categoria e preço
+            let produtosFiltrados = db.filtrarPorCategoria(categoriaSelecionada);
+            
+            // Aplicar filtro de preço
+            if (precoSelecionado === "ate50") {
+                produtosFiltrados = produtosFiltrados.filter(p => p.preco <= 50);
+            } else if (precoSelecionado === "ate100") {
+                produtosFiltrados = produtosFiltrados.filter(p => p.preco <= 100);
+            } else if (precoSelecionado === "acima100") {
+                produtosFiltrados = produtosFiltrados.filter(p => p.preco > 100);
+            }
+            
+            return produtosFiltrados;
+        } else if (categoriaSelecionada !== 'tudo') {
+            // Filtrar apenas por categoria
+            return db.filtrarPorCategoria(categoriaSelecionada);
+        } else if (precoSelecionado !== 'tudo') {
+            // Filtrar apenas por preço
+            return db.filtrarPorPreco(precoSelecionado);
+        } else {
+            // Sem filtros
+            return db.obterTodos();
+        }
+    } else {
+        console.warn('Banco de dados não disponível, usando array de produtos estático');
+        return produtos;
+    }
+}
+
 function filtrarProdutos() {
-    let lista = produtos;
-
-    // Filtro por categoria
-    if (categoriaSelecionada !== 'tudo') {
-        lista = lista.filter(p => p.categoria === categoriaSelecionada);
-    }
-
-    // Filtro por preço
-    if (precoSelecionado === "ate50") {
-        lista = lista.filter(p => parseFloat(p.preco.replace("R$", "").replace(",", ".")) <= 50);
-    } else if (precoSelecionado === "ate100") {
-        lista = lista.filter(p => parseFloat(p.preco.replace("R$", "").replace(",", ".")) <= 100);
-    } else if (precoSelecionado === "acima100") {
-        lista = lista.filter(p => parseFloat(p.preco.replace("R$", "").replace(",", ".")) > 100);
-    }
-
-    renderizarProdutosFiltrados(lista);
+    const produtosFiltrados = carregarProdutos();
+    renderizarProdutosFiltrados(produtosFiltrados);
 }
 
 document.querySelectorAll('.filtro').forEach(btn => {
@@ -175,7 +108,7 @@ function renderizarProdutosFiltrados(lista) {
         div.innerHTML = `
             <img src="${produto.imagem}" alt="${produto.nome}">
             <h2>${produto.nome}</h2>
-            <p>${produto.preco}</p>
+            <p>${formatarPreco(produto.preco)}</p>
             <button class="comprar-btn">Comprar</button>
         `;
         div.querySelector('.comprar-btn').onclick = () => {
@@ -185,6 +118,40 @@ function renderizarProdutosFiltrados(lista) {
     });
 }
 
-// Inicialização
-document.querySelector('.filtro[data-categoria="tudo"]').classList.add('active');
-filtrarProdutos();
+// Inicializar a página
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelector('.filtro[data-categoria="tudo"]').classList.add('active');
+    
+    // Carregar dados iniciais
+    if (typeof db !== 'undefined') {
+        produtos = db.obterTodos();
+    } else {
+        console.warn('Banco de dados não disponível, carregando produtos padrão');
+        // Dados padrão caso db.js não esteja carregado
+        produtos = [
+            {
+                id: 1,
+                nome: "Camiseta Básica",
+                preco: 49.90,
+                categoria: "masculino",
+                imagem: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80"
+            },
+            {
+                id: 2,
+                nome: "Vestido Floral",
+                preco: 89.90,
+                categoria: "feminino",
+                imagem: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=400&q=80"
+            },
+            {
+                id: 3,
+                nome: "Calça Jeans",
+                preco: 99.90,
+                categoria: "masculino",
+                imagem: "https://imags.unsplash.com/photo-1469398715555-76331a6c7fa0?auto=format&fit=crop&w=400&q=80"
+            }
+        ];
+    }
+    
+    filtrarProdutos();
+});

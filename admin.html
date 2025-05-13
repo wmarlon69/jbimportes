@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo - JB IMPORTES</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .card {
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #2c3e50;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        form {
+            display: grid;
+            grid-gap: 15px;
+        }
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #2c3e50;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #1a2530;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .produto-img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        .acao-btn {
+            background-color: #e74c3c;
+            margin-right: 5px;
+        }
+        .acao-btn.editar {
+            background-color: #3498db;
+        }
+        .mensagem {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        .sucesso {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .erro {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        /* Estilos para o login */
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+        .login-container h2 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .login-form {
+            margin-top: 20px;
+        }
+        .login-btn {
+            width: 100%;
+            margin-top: 10px;
+            background-color: #ff9800;
+        }
+        .login-btn:hover {
+            background-color: #e68c06;
+        }
+        .voltar-btn {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #2c3e50;
+            text-decoration: none;
+        }
+        .voltar-btn:hover {
+            text-decoration: underline;
+        }
+        .admin-page {
+            display: none; /* Inicialmente escondido */
+        }
+        .logout-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #e74c3c;
+            padding: 8px 15px;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+            border: none;
+            font-size: 14px;
+        }
+        .logout-btn:hover {
+            background-color: #c0392b;
+        }
+        .sessao-info {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: #ecf0f1;
+            font-size: 14px;
+        }
+        .categoria-label {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 15px;
+            color: white;
+            font-weight: bold;
+        }
+        .categoria-infantil { background-color: #3498db; }
+        .categoria-feminino { background-color: #9b59b6; }
+        .categoria-masculino { background-color: #2c3e50; }
+    </style>
+</head>
+<body>
+    <!-- Tela de Login -->
+    <div id="login-screen" class="login-container">
+        <h2>Acesso Administrativo</h2>
+        <p>Digite a senha para acessar o painel administrativo</p>
+        
+        <div id="login-mensagem" class="mensagem" style="display: none;"></div>
+        
+        <form id="login-form" class="login-form">
+            <div>
+                <label for="senha">Senha:</label>
+                <input type="password" id="senha" required>
+            </div>
+            <button type="submit" class="login-btn">Entrar</button>
+        </form>
+        
+        <a href="index.html" class="voltar-btn">Voltar para a loja</a>
+    </div>
+
+    <!-- Conteúdo do Admin -->
+    <div id="admin-page" class="admin-page">
+        <header>
+            <div class="sessao-info">
+                <span id="tempo-sessao"></span>
+            </div>
+            <h1>Painel Administrativo - JB IMPORTES</h1>
+            <p>Gerencie seus produtos</p>
+            <button id="logout-btn" class="logout-btn">Sair</button>
+        </header>
+
+        <div class="container">
+            <div id="mensagem"></div>
+            
+            <div class="card">
+                <h2>Adicionar/Editar Produto</h2>
+                <form id="form-produto">
+                    <input type="hidden" id="produto-id">
+                    
+                    <div>
+                        <label for="nome">Nome do Produto:</label>
+                        <input type="text" id="nome" required>
+                    </div>
+                    
+                    <div>
+                        <label for="preco">Preço (R$):</label>
+                        <input type="number" id="preco" min="0" step="0.01" required>
+                    </div>
+                    
+                    <div>
+                        <label for="categoria">Categoria:</label>
+                        <select id="categoria" required>
+                            <option value="">Selecione</option>
+                            <!-- Categorias serão adicionadas dinamicamente -->
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label for="imagem">URL da Imagem:</label>
+                        <input type="text" id="imagem" required>
+                    </div>
+                    
+                    <button type="submit" id="btn-salvar">Salvar Produto</button>
+                </form>
+            </div>
+            
+            <div class="card">
+                <h2>Produtos Cadastrados</h2>
+                <table id="tabela-produtos">
+                    <thead>
+                        <tr>
+                            <th>Imagem</th>
+                            <th>Nome</th>
+                            <th>Preço</th>
+                            <th>Categoria</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Os produtos serão inseridos aqui dinamicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Carregando arquivo de configuração -->
+    <script src="config.js"></script>
+    <script src="db.js"></script>
+    <script>
+        // Verificar autenticação
+        function verificarAutenticacao() {
+            const autenticado = sessionStorage.getItem('admin_autenticado');
+            const expiracaoStr = sessionStorage.getItem('admin_expiracao');
+            
+            if (autenticado && expiracaoStr) {
+                const expiracao = new Date(expiracaoStr);
+                const agora = new Date();
+                
+                if (agora < expiracao) {
+                    // Sessão válida
+                    document.getElementById('login-screen').style.display = 'none';
+                    document.getElementById('admin-page').style.display = 'block';
+                    
+                    // Inicializar dados do admin
+                    inicializarPaginaAdmin();
+                    
+                    // Atualizar timer de sessão
+                    atualizarTimerSessao();
+                    return true;
+                } else {
+                    // Sessão expirada
+                    sessionStorage.removeItem('admin_autenticado');
+                    sessionStorage.removeItem('admin_expiracao');
+                }
+            }
+            
+            return false;
+        }
+        
+        // Inicializar página de admin
+        function inicializarPaginaAdmin() {
+            // Carregar categorias no select
+            const selectCategoria = document.getElementById('categoria');
+            selectCategoria.innerHTML = '<option value="">Selecione</option>';
+            
+            CONFIG.CATEGORIAS.forEach(categoria => {
+                const option = document.createElement('option');
+                option.value = categoria.id;
+                option.textContent = `${categoria.icone} ${categoria.nome}`;
+                selectCategoria.appendChild(option);
+            });
+            
+            // Renderizar tabela de produtos
+            renderizarTabela();
+        }
+        
+        // Atualizar timer de sessão
+        function atualizarTimerSessao() {
+            const expiracaoStr = sessionStorage.getItem('admin_expiracao');
+            
+            if (expiracaoStr) {
+                const expiracao = new Date(expiracaoStr);
+                const agora = new Date();
+                
+                if (agora < expiracao) {
+                    const diferencaMs = expiracao - agora;
+                    const minutos = Math.floor(diferencaMs / 60000);
+                    const segundos = Math.floor((diferencaMs % 60000) / 1000);
+                    
+                    document.getElementById('tempo-sessao').textContent = 
+                        `Sessão expira em ${minutos}m ${segundos}s`;
+                        
+                    // Renovar sessão se estiver próxima de expirar
+                    if (minutos < 5) {
+                        renovarSessao();
+                    }
+                    
+                    // Atualizar a cada segundo
+                    setTimeout(atualizarTimerSessao, 1000);
+                } else {
+                    // Sessão expirada
+                    alert('Sua sessão expirou. Por favor, faça login novamente.');
+                    logout();
+                }
+            }
+        }
+        
+        // Renovar sessão
+        function renovarSessao() {
+            const agora = new Date();
+            const expiracao = new Date(agora.getTime() + CONFIG.TEMPO_EXPIRACAO_SESSAO * 60000);
+            sessionStorage.setItem('admin_expiracao', expiracao.toISOString());
+        }
+        
+        // Verificar login
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const senha = document.getElementById('senha').value;
+            
+            if (senha === CONFIG.SENHA_ADMIN) {
+                // Login com sucesso
+                const agora = new Date();
+                const expiracao = new Date(agora.getTime() + CONFIG.TEMPO_EXPIRACAO_SESSAO * 60000);
+                
+                sessionStorage.setItem('admin_autenticado', 'true');
+                sessionStorage.setItem('admin_expiracao', expiracao.toISOString());
+                
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('admin-page').style.display = 'block';
+                
+                // Inicializar dados do admin
+                inicializarPaginaAdmin();
+                
+                // Iniciar contador de sessão
+                atualizarTimerSessao();
+            } else {
+                // Senha incorreta
+                const mensagem = document.getElementById('login-mensagem');
+                mensagem.textContent = 'Senha incorreta! Tente novamente.';
+                mensagem.className = 'mensagem erro';
+                mensagem.style.display = 'block';
+                
+                // Limpar após 3 segundos
+                setTimeout(() => {
+                    mensagem.style.display = 'none';
+                }, 3000);
+            }
+        });
+        
+        // Logout
+        function logout() {
+            sessionStorage.removeItem('admin_autenticado');
+            sessionStorage.removeItem('admin_expiracao');
+            document.getElementById('login-screen').style.display = 'block';
+            document.getElementById('admin-page').style.display = 'none';
+            document.getElementById('senha').value = '';
+        }
+        
+        document.getElementById('logout-btn').addEventListener('click', logout);
+        
+        // Função para renderizar produtos na tabela
+        function renderizarTabela() {
+            const produtos = db.obterTodos();
+            const tbody = document.querySelector('#tabela-produtos tbody');
+            tbody.innerHTML = '';
+            
+            produtos.forEach(produto => {
+                // Encontrar categoria na configuração
+                const categoriaCfg = CONFIG.CATEGORIAS.find(cat => cat.id === produto.categoria);
+                const categoriaTexto = categoriaCfg ? `${categoriaCfg.icone} ${categoriaCfg.nome}` : produto.categoria;
+                
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><img src="${produto.imagem}" alt="${produto.nome}" class="produto-img"></td>
+                    <td>${produto.nome}</td>
+                    <td>${CONFIG.MOEDA} ${produto.preco.toFixed(2).replace('.', ',')}</td>
+                    <td><span class="categoria-label categoria-${produto.categoria}">${categoriaTexto}</span></td>
+                    <td>
+                        <button class="acao-btn editar" data-id="${produto.id}">Editar</button>
+                        <button class="acao-btn" data-id="${produto.id}">Excluir</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            
+            // Adicionar eventos aos botões
+            document.querySelectorAll('.acao-btn.editar').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = parseInt(e.target.dataset.id);
+                    carregarProduto(id);
+                });
+            });
+            
+            document.querySelectorAll('.acao-btn:not(.editar)').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = parseInt(e.target.dataset.id);
+                    excluirProduto(id);
+                });
+            });
+        }
+        
+        // Função para carregar produto no formulário para edição
+        function carregarProduto(id) {
+            const produto = db.buscarPorId(id);
+            
+            if (produto) {
+                document.getElementById('produto-id').value = produto.id;
+                document.getElementById('nome').value = produto.nome;
+                document.getElementById('preco').value = produto.preco;
+                document.getElementById('categoria').value = produto.categoria;
+                document.getElementById('imagem').value = produto.imagem;
+                
+                document.getElementById('btn-salvar').textContent = 'Atualizar Produto';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+        
+        // Função para excluir produto
+        function excluirProduto(id) {
+            if (confirm('Tem certeza que deseja excluir este produto?')) {
+                const removido = db.remover(id);
+                
+                if (removido) {
+                    renderizarTabela();
+                    mostrarMensagem('Produto excluído com sucesso!', 'sucesso');
+                } else {
+                    mostrarMensagem('Erro ao excluir produto!', 'erro');
+                }
+            }
+        }
+        
+        // Função para mostrar mensagens
+        function mostrarMensagem(texto, tipo) {
+            const div = document.getElementById('mensagem');
+            div.className = `mensagem ${tipo}`;
+            div.textContent = texto;
+            setTimeout(() => {
+                div.textContent = '';
+                div.className = '';
+            }, 3000);
+        }
+        
+        // Manipular envio do formulário
+        document.getElementById('form-produto').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('produto-id').value;
+            const nome = document.getElementById('nome').value;
+            const preco = parseFloat(document.getElementById('preco').value);
+            const categoria = document.getElementById('categoria').value;
+            const imagem = document.getElementById('imagem').value;
+            
+            const produto = {
+                nome,
+                preco,
+                categoria,
+                imagem
+            };
+            
+            if (id) {
+                // Editando produto existente
+                produto.id = parseInt(id);
+                db.atualizar(produto);
+                mostrarMensagem('Produto atualizado com sucesso!', 'sucesso');
+            } else {
+                // Adicionando novo produto
+                db.adicionar(produto);
+                mostrarMensagem('Produto adicionado com sucesso!', 'sucesso');
+            }
+            
+            renderizarTabela();
+            
+            // Limpar formulário
+            this.reset();
+            document.getElementById('produto-id').value = '';
+            document.getElementById('btn-salvar').textContent = 'Salvar Produto';
+        });
+        
+        // Verificar autenticação ao carregar a página
+        document.addEventListener('DOMContentLoaded', () => {
+            verificarAutenticacao();
+        });
+    </script>
+</body>
+</html> 
