@@ -1,0 +1,4 @@
+Por favor, adicione um arquivo chamado 'imagem-indisponivel.jpg' neste diretório.
+Este arquivo será usado como imagem padrão quando uma imagem de produto não for encontrada.
+
+Sugestão: use uma imagem simples com tamanho de aproximadamente 400x400 pixels. 

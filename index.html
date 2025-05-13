@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JB IMPORTES - Moda e Estilo</title>
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="style.css">
     <script>
         function verificarCSS() {
             const styleLoaded = Array.from(document.styleSheets).some(sheet => {
@@ -19,7 +19,7 @@
                 console.warn('CSS não carregado. Tentando novamente...');
                 const link = document.createElement('link');
                 link.rel = 'stylesheet';
-                link.href = '/style.css?nocache=' + new Date().getTime();
+                link.href = 'style.css?nocache=' + new Date().getTime();
                 document.head.appendChild(link);
             }
         }
@@ -84,16 +84,16 @@
         </div>
     </div>
     
-    <script src="/config.js"></script>
-    <script src="/db-remote.js"></script>
-    <script src="/script.js"></script>
+    <script src="config.js"></script>
+    <script src="db-simple.js"></script>
+    <script src="script.js"></script>
     
     <!-- Script de fallback para garantir carregamento -->
     <script>
         // Verificar se os scripts foram carregados
         function verificarScripts() {
             // Lista de scripts que devem estar carregados
-            const scriptsNecessarios = ['config.js', 'db-remote.js', 'script.js'];
+            const scriptsNecessarios = ['config.js', 'db-simple.js', 'script.js'];
             
             // Verificar scripts carregados
             const scriptsCarregados = Array.from(document.scripts).map(s => {
@@ -112,7 +112,7 @@
                 console.warn('Scripts não carregados:', scriptsFaltando);
                 scriptsFaltando.forEach(script => {
                     const s = document.createElement('script');
-                    s.src = `/${script}?nocache=${new Date().getTime()}`;
+                    s.src = `${script}?nocache=${new Date().getTime()}`;
                     document.body.appendChild(s);
                 });
             }

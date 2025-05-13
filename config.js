@@ -1,30 +1,52 @@
 /**
- * JB IMPORTES - Arquivo de configuração
- * Este arquivo contém configurações globais do sistema
+ * config.js - Arquivo de configurações da loja JB IMPORTES
  */
 
-// Configurações de acesso ao painel administrativo
 const CONFIG = {
-    // Senha para acesso ao painel administrativo
-    SENHA_ADMIN: "123456",
+    // Nome da loja
+    nomeLoja: 'JB IMPORTES',
     
-    // Redirecionar automaticamente para a página de login se não estiver autenticado
-    REDIRECIONAR_SEM_AUTENTICACAO: true,
+    // Versão do aplicativo
+    versao: '1.0.0',
     
-    // Tempo de expiração da sessão (em minutos)
-    TEMPO_EXPIRACAO_SESSAO: 30,
-    
-    // Outras configurações do sistema
-    NOME_LOJA: "JB IMPORTES",
-    MOEDA: "R$",
+    // Configurações do sistema
+    sistema: {
+        // Local de armazenamento das imagens
+        pastaImagens: 'img/',
+        
+        // Imagem padrão quando não encontrada
+        imagemPadrao: 'img/imagem-indisponivel.jpg',
+        
+        // Limite de tamanho para upload de imagens (em bytes)
+        limiteTamanhoImagem: 5 * 1024 * 1024, // 5MB
+        
+        // Tipos de arquivos permitidos para upload
+        tiposArquivosPermitidos: ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
+    },
     
     // Categorias disponíveis
-    CATEGORIAS: [
-        {id: "infantil", nome: "Infantil", icone: "🧒"},
-        {id: "feminino", nome: "Feminino", icone: "👗"},
-        {id: "masculino", nome: "Masculino", icone: "🧥"}
+    categorias: [
+        { id: 'tudo', nome: '✨ Tudo', icone: '✨' },
+        { id: 'infantil', nome: '🧒 Infantil', icone: '🧒' },
+        { id: 'feminino', nome: '👗 Feminino', icone: '👗' },
+        { id: 'masculino', nome: '🧥 Masculino', icone: '🧥' }
+    ],
+    
+    // Faixas de preço para filtro
+    faixasPreco: [
+        { id: 'tudo', nome: 'Todos' },
+        { id: 'ate50', nome: 'Até R$50' },
+        { id: 'ate100', nome: 'Até R$100' },
+        { id: 'acima100', nome: 'Acima de R$100' }
     ],
     
     // Tamanhos disponíveis
-    TAMANHOS: ["P", "M", "G", "GG"]
+    tamanhos: ['P', 'M', 'G', 'GG'],
+    
+    // Configurações de contato
+    contato: {
+        whatsapp: '5583996695516',
+        instagram: 'jbimportes',
+        email: 'contato@jbimportes.com.br'
+    }
 }; 

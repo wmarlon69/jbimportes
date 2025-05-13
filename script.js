@@ -1,4 +1,4 @@
-// Array de produtos (será substituído pelos dados do banco)
+// Array de produtos (será substituído pelos dados do localStorage)
 let produtos = [];
 
 function abrirModal(produto) {
@@ -71,7 +71,7 @@ function verificarCaminhoImagem(imagem) {
     return imagem;
 }
 
-// Função para carregar produtos do banco de dados
+// Função para carregar produtos do localStorage
 async function carregarProdutos() {
     // Mostrar indicador de carregamento
     document.getElementById("produtos").innerHTML = '<div class="loading">Carregando produtos...</div>';
@@ -84,7 +84,7 @@ async function carregarProdutos() {
             // Usar o banco de dados
             if (categoriaSelecionada !== 'tudo' && precoSelecionado !== 'tudo') {
                 // Filtrar por categoria e preço
-                produtosFiltrados = await db.filtrarPorCategoria(categoriaSelecionada);
+                produtosFiltrados = db.filtrarPorCategoria(categoriaSelecionada);
                 
                 // Aplicar filtro de preço
                 if (precoSelecionado === "ate50") {
@@ -96,13 +96,13 @@ async function carregarProdutos() {
                 }
             } else if (categoriaSelecionada !== 'tudo') {
                 // Filtrar apenas por categoria
-                produtosFiltrados = await db.filtrarPorCategoria(categoriaSelecionada);
+                produtosFiltrados = db.filtrarPorCategoria(categoriaSelecionada);
             } else if (precoSelecionado !== 'tudo') {
                 // Filtrar apenas por preço
-                produtosFiltrados = await db.filtrarPorPreco(precoSelecionado);
+                produtosFiltrados = db.filtrarPorPreco(precoSelecionado);
             } else {
                 // Sem filtros
-                produtosFiltrados = await db.obterTodos();
+                produtosFiltrados = db.obterTodos();
             }
         } else {
             console.warn('Banco de dados não disponível, usando array de produtos estático');
@@ -222,81 +222,47 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     // Carregar dados iniciais
     try {
-        // Tentar carregar os produtos do servidor REST diretamente
-        const serverUrl = window.location.origin;
-        try {
-            const response = await fetch(`${serverUrl}/api/produtos`);
-            if (response.ok) {
-                produtos = await response.json();
-                console.log('Produtos carregados via API REST:', produtos.length);
-            } else {
-                throw new Error('Não foi possível carregar os produtos via API REST');
-            }
-        } catch (apiError) {
-            console.warn('Erro ao carregar via API REST, tentando método alternativo:', apiError);
-            
-            if (typeof db !== 'undefined') {
-                // Forçar atualização dos produtos a partir do servidor
-                produtos = await db.init();
-                if (!produtos || produtos.length === 0) {
-                    // Se não conseguir dados do servidor, tenta obter todos novamente
-                    produtos = await db.obterTodos();
+        if (typeof db !== 'undefined') {
+            // Usar o banco de dados local
+            produtos = db.obterTodos();
+            console.log('Produtos carregados do localStorage:', produtos.length);
+        } else {
+            console.warn('Banco de dados não disponível, carregando produtos padrão');
+            // Dados padrão caso db.js não esteja carregado
+            produtos = [
+                {
+                    id: 1,
+                    nome: "Camiseta Básica",
+                    preco: 49.90,
+                    categoria: "masculino",
+                    imagem: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80"
+                },
+                {
+                    id: 2,
+                    nome: "Vestido Floral",
+                    preco: 89.90,
+                    categoria: "feminino",
+                    imagem: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=400&q=80"
+                },
+                {
+                    id: 3,
+                    nome: "Calça Jeans",
+                    preco: 99.90,
+                    categoria: "masculino",
+                    imagem: "https://images.unsplash.com/photo-1469398715555-76331a6c7fa0?auto=format&fit=crop&w=400&q=80"
+                },
+                {
+                    id: 4,
+                    nome: "Conjunto Infantil",
+                    preco: 79.90,
+                    categoria: "infantil",
+                    imagem: "img/imagem-indisponivel.jpg"
                 }
-                console.log('Produtos carregados do servidor via db.js:', produtos.length);
-            } else {
-                console.warn('Banco de dados não disponível, carregando produtos padrão');
-                // Dados padrão caso db.js não esteja carregado
-                produtos = [
-                    {
-                        id: 1,
-                        nome: "Camiseta Básica",
-                        preco: 49.90,
-                        categoria: "masculino",
-                        imagem: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80"
-                    },
-                    {
-                        id: 2,
-                        nome: "Vestido Floral",
-                        preco: 89.90,
-                        categoria: "feminino",
-                        imagem: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=400&q=80"
-                    },
-                    {
-                        id: 3,
-                        nome: "Calça Jeans",
-                        preco: 99.90,
-                        categoria: "masculino",
-                        imagem: "https://images.unsplash.com/photo-1469398715555-76331a6c7fa0?auto=format&fit=crop&w=400&q=80"
-                    },
-                    {
-                        id: 4,
-                        nome: "WMarlon Special",
-                        preco: 999.99,
-                        categoria: "masculino",
-                        imagem: "img/wm.jpg"
-                    }
-                ];
-            }
+            ];
         }
         
         // Renderizar produtos
         renderizarProdutosFiltrados(produtos);
-        
-        // Configurar atualização periódica dos produtos a cada 60 segundos
-        setInterval(async () => {
-            try {
-                if (typeof db !== 'undefined') {
-                    console.log('Atualizando produtos do servidor...');
-                    produtos = await db.obterTodos();
-                    // Apenas re-renderize se os filtros atuais estiverem em "tudo"
-                    if (categoriaSelecionada === 'tudo' && precoSelecionado === 'tudo') {
-                        renderizarProdutosFiltrados(produtos);
-                    }
-                }
-            } catch (error) {
-                console.error('Erro na atualização periódica:', error);
-            }
-        }, 60000); // 60 segundos
         
     } catch (error) {
         console.error('Erro ao inicializar a página:', error);

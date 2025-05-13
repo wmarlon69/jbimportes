@@ -3,557 +3,765 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Administrativo - JB IMPORTES</title>
+    <title>Administração - JB IMPORTES</title>
     <link rel="stylesheet" href="/style.css">
     <style>
-        * {
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
-        body {
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 20px;
-        }
-        header {
-            background-color: #2c3e50;
-            color: white;
-            padding: 20px;
-            text-align: center;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            position: relative;
-        }
-        .container {
+        /* Estilos específicos para a página de administração */
+        .admin-container {
             max-width: 1200px;
             margin: 0 auto;
-        }
-        .card {
-            background-color: white;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             padding: 20px;
-            margin-bottom: 20px;
+            color: #000000;
         }
-        h2 {
-            color: #2c3e50;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
+        
+        .form-group {
+            margin-bottom: 15px;
         }
-        form {
-            display: grid;
-            grid-gap: 15px;
-        }
-        label {
-            font-weight: bold;
-            margin-bottom: 5px;
+        
+        .form-group label {
             display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #000000;
         }
-        input, select, textarea {
+        
+        .form-control {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
+            padding: 8px;
+            border: 1px solid #000000;
             border-radius: 4px;
-            font-size: 16px;
         }
-        button {
-            background-color: #2c3e50;
-            color: white;
+        
+        .btn {
+            padding: 8px 16px;
+            background-color: #000000;
+            color: #ffffff;
             border: none;
-            padding: 12px 20px;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 16px;
         }
-        button:hover {
-            background-color: #1a2530;
+        
+        .btn:hover {
+            background-color: #333333;
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
+        
+        .btn-danger {
+            background-color: #000000;
+            color: #ffffff;
         }
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
+        
+        .btn-danger:hover {
+            background-color: #333333;
         }
-        th {
-            background-color: #f2f2f2;
+        
+        .admin-section {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
-        .produto-img {
-            width: 80px;
-            height: 80px;
+        
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .produto-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .produto-item:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .produto-item img {
+            width: 50px;
+            height: 50px;
             object-fit: cover;
             border-radius: 4px;
         }
-        .acao-btn {
-            background-color: #e74c3c;
-            margin-right: 5px;
+        
+        .produto-info {
+            flex-grow: 1;
+            margin: 0 10px;
         }
-        .acao-btn.editar {
-            background-color: #3498db;
+        
+        .produto-info h3 {
+            color: #000000;
+            margin: 0;
         }
-        .mensagem {
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 4px;
+        
+        .produto-info p {
+            color: #000000;
+            margin: 5px 0;
         }
-        .sucesso {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
+        
+        .produto-acoes {
+            display: flex;
+            gap: 5px;
         }
-        .erro {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        /* Estilos para o login */
-        .login-container {
+        
+        .login-form {
             max-width: 400px;
             margin: 100px auto;
-            padding: 30px;
-            background-color: white;
-            border-radius: 5px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-            text-align: center;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            color: #000000;
         }
-        .login-container h2 {
-            margin-top: 0;
-            color: #2c3e50;
+        
+        .login-form h2 {
+            color: #000000;
+            margin-bottom: 20px;
         }
-        .login-form {
-            margin-top: 20px;
+        
+        .login-container {
+            color: #000000;
         }
-        .login-btn {
-            width: 100%;
-            margin-top: 10px;
-            background-color: #ff9800;
+        
+        .login-container label {
+            color: #000000;
         }
-        .login-btn:hover {
-            background-color: #e68c06;
-        }
-        .voltar-btn {
-            display: block;
-            text-align: center;
-            margin-top: 20px;
-            color: #2c3e50;
-            text-decoration: none;
-        }
-        .voltar-btn:hover {
-            text-decoration: underline;
-        }
-        .admin-page {
-            display: none; /* Inicialmente escondido */
-        }
-        .logout-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: #e74c3c;
-            padding: 8px 15px;
+        
+        .alert {
+            padding: 10px;
+            margin-bottom: 15px;
             border-radius: 4px;
-            color: white;
+        }
+        
+        .alert-danger {
+            background-color: #ffffff;
+            color: #000000;
+            border: 1px solid #000000;
+        }
+        
+        .alert-success {
+            background-color: #ffffff;
+            color: #000000;
+            border: 1px solid #000000;
+        }
+        
+        #preview-imagem {
+            max-width: 200px;
+            max-height: 200px;
+            margin-top: 10px;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .tab {
+            padding: 10px 15px;
             cursor: pointer;
-            border: none;
-            font-size: 14px;
+            border: 1px solid transparent;
+            border-bottom: none;
+            margin-right: 5px;
+            color: #000000;
         }
-        .logout-btn:hover {
-            background-color: #c0392b;
+        
+        .tab.active {
+            border-color: #000000;
+            border-radius: 4px 4px 0 0;
+            background-color: #ffffff;
+            margin-bottom: -1px;
+            color: #000000;
         }
-        .sessao-info {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            color: #ecf0f1;
-            font-size: 14px;
+        
+        .tab-content {
+            display: none;
         }
-        .categoria-label {
-            display: inline-block;
-            padding: 5px 10px;
-            border-radius: 15px;
-            color: white;
-            font-weight: bold;
+        
+        .tab-content.active {
+            display: block;
         }
-        .categoria-infantil { background-color: #3498db; }
-        .categoria-feminino { background-color: #9b59b6; }
-        .categoria-masculino { background-color: #2c3e50; }
+        
+        .admin-header h1 {
+            color: #000000;
+        }
+        
+        .admin-section h2 {
+            color: #000000;
+        }
     </style>
 </head>
 <body>
-    <!-- Tela de Login -->
-    <div id="login-screen" class="login-container">
-        <h2>Acesso Administrativo</h2>
-        <p>Digite a senha para acessar o painel administrativo</p>
-        
-        <div id="login-mensagem" class="mensagem" style="display: none;"></div>
-        
-        <form id="login-form" class="login-form">
-            <div>
-                <label for="senha">Senha:</label>
-                <input type="password" id="senha" required>
+    <div class="login-container" id="login-section">
+        <div class="login-form">
+            <h2>Login de Administrador</h2>
+            <div id="login-error" class="alert alert-danger" style="display: none;"></div>
+            <div class="form-group">
+                <label for="senha-admin">Senha de Administrador:</label>
+                <input type="password" id="senha-admin" class="form-control">
             </div>
-            <button type="submit" class="login-btn">Entrar</button>
-        </form>
-        
-        <a href="index.html" class="voltar-btn">Voltar para a loja</a>
-    </div>
-
-    <!-- Conteúdo do Admin -->
-    <div id="admin-page" class="admin-page">
-        <header>
-            <div class="sessao-info">
-                <span id="tempo-sessao"></span>
-            </div>
-            <h1>Painel Administrativo - JB IMPORTES</h1>
-            <p>Gerencie seus produtos</p>
-            <button id="logout-btn" class="logout-btn">Sair</button>
-        </header>
-
-        <div class="container">
-            <div id="mensagem"></div>
-            
-            <div class="card">
-                <h2>Adicionar/Editar Produto</h2>
-                <form id="form-produto">
-                    <input type="hidden" id="produto-id">
-                    
-                    <div>
-                        <label for="nome">Nome do Produto:</label>
-                        <input type="text" id="nome" required>
-                    </div>
-                    
-                    <div>
-                        <label for="preco">Preço (R$):</label>
-                        <input type="number" id="preco" min="0" step="0.01" required>
-                    </div>
-                    
-                    <div>
-                        <label for="categoria">Categoria:</label>
-                        <select id="categoria" required>
-                            <option value="">Selecione</option>
-                            <!-- Categorias serão adicionadas dinamicamente -->
-                        </select>
-                    </div>
-                    
-                    <div>
-                        <label for="imagem">URL da Imagem:</label>
-                        <input type="text" id="imagem" required>
-                    </div>
-                    
-                    <button type="submit" id="btn-salvar">Salvar Produto</button>
-                </form>
-            </div>
-            
-            <div class="card">
-                <h2>Produtos Cadastrados</h2>
-                <table id="tabela-produtos">
-                    <thead>
-                        <tr>
-                            <th>Imagem</th>
-                            <th>Nome</th>
-                            <th>Preço</th>
-                            <th>Categoria</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Os produtos serão inseridos aqui dinamicamente -->
-                    </tbody>
-                </table>
-            </div>
+            <button id="btn-login" class="btn">Entrar</button>
         </div>
     </div>
 
-    <!-- Carregando arquivo de configuração -->
-    <script src="/config.js"></script>
-    <script src="/db-remote.js"></script>
+    <div class="admin-container" id="admin-section" style="display: none;">
+        <div class="admin-header">
+            <h1>Administração - JB IMPORTES</h1>
+            <div>
+                <button id="btn-logout" class="btn btn-danger">Sair</button>
+            </div>
+        </div>
+        
+        <div class="tabs">
+            <div class="tab active" data-tab="produtos">Produtos</div>
+            <div class="tab" data-tab="config">Configurações</div>
+            <div class="tab" data-tab="backup">Backup</div>
+        </div>
+        
+        <div class="tab-content active" id="tab-produtos">
+            <div class="admin-section">
+                <h2>Adicionar/Editar Produto</h2>
+                <div id="form-error" class="alert alert-danger" style="display: none;"></div>
+                <div id="form-success" class="alert alert-success" style="display: none;"></div>
+                
+                <form id="form-produto">
+                    <input type="hidden" id="produto-id">
+                    
+                    <div class="form-group">
+                        <label for="produto-nome">Nome do Produto:</label>
+                        <input type="text" id="produto-nome" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="produto-preco">Preço (R$):</label>
+                        <input type="number" id="produto-preco" class="form-control" step="0.01" min="0" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="produto-categoria">Categoria:</label>
+                        <select id="produto-categoria" class="form-control" required>
+                            <option value="">Selecione</option>
+                            <option value="infantil">Infantil</option>
+                            <option value="feminino">Feminino</option>
+                            <option value="masculino">Masculino</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="produto-imagem">URL da Imagem:</label>
+                        <input type="url" id="produto-imagem" class="form-control">
+                        <small>Deixe em branco para usar a imagem padrão</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="produto-imagem-upload">Ou faça upload de uma imagem:</label>
+                        <input type="file" id="produto-imagem-upload" accept="image/*">
+                        <div id="preview-imagem-container">
+                            <img id="preview-imagem" style="display: none;">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <button type="submit" id="btn-salvar" class="btn">Salvar Produto</button>
+                        <button type="button" id="btn-cancelar" class="btn" style="display: none;">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="admin-section">
+                <h2>Lista de Produtos</h2>
+                <div id="lista-produtos"></div>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="tab-config">
+            <div class="admin-section">
+                <h2>Alterar Senha de Administrador</h2>
+                <div id="senha-error" class="alert alert-danger" style="display: none;"></div>
+                <div id="senha-success" class="alert alert-success" style="display: none;"></div>
+                
+                <div class="form-group">
+                    <label for="senha-atual">Senha Atual:</label>
+                    <input type="password" id="senha-atual" class="form-control">
+                </div>
+                
+                <div class="form-group">
+                    <label for="nova-senha">Nova Senha:</label>
+                    <input type="password" id="nova-senha" class="form-control">
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmar-senha">Confirmar Nova Senha:</label>
+                    <input type="password" id="confirmar-senha" class="form-control">
+                </div>
+                
+                <button id="btn-alterar-senha" class="btn">Alterar Senha</button>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="tab-backup">
+            <div class="admin-section">
+                <h2>Backup e Restauração</h2>
+                <p>Exporte os dados para fazer backup ou importe para restaurar.</p>
+                
+                <div class="form-group">
+                    <button id="btn-exportar" class="btn">Exportar Dados</button>
+                </div>
+                
+                <div class="form-group">
+                    <label for="arquivo-importacao">Importar Dados:</label>
+                    <input type="file" id="arquivo-importacao" accept=".json">
+                </div>
+                
+                <button id="btn-importar" class="btn">Importar</button>
+            </div>
+        </div>
+    </div>
     
+    <script src="config.js"></script>
+    <script src="db-simple.js"></script>
     <script>
-        // Verificar autenticação
-        function verificarAutenticacao() {
-            const autenticado = sessionStorage.getItem('admin_autenticado');
-            const expiracaoStr = sessionStorage.getItem('admin_expiracao');
+        // Verificar se o localStorage está disponível
+        (function() {
+            try {
+                localStorage.setItem('test', 'test');
+                localStorage.removeItem('test');
+                console.log('localStorage disponível');
+            } catch (e) {
+                console.error('Erro ao acessar localStorage:', e);
+                alert('Seu navegador não suporta ou está bloqueando o localStorage. O sistema não funcionará corretamente.');
+            }
+        })();
+        
+        // Verificar se a senha padrão está funcionando
+        console.log('Verificando senha padrão...');
+        const testeSenha = db.verificarAdmin('admin123');
+        console.log('Teste da senha padrão:', testeSenha ? 'OK' : 'FALHOU');
+        
+        // Variáveis de controle
+        let produtoEditando = null;
+        let imagemUpload = null;
+        
+        // Sistema de login
+        async function fazerLogin() {
+            const senha = document.getElementById('senha-admin').value.trim();
+            console.log('Tentando login com senha:', senha);
             
-            if (autenticado && expiracaoStr) {
-                const expiracao = new Date(expiracaoStr);
-                const agora = new Date();
-                
-                if (agora < expiracao) {
-                    // Sessão válida
-                    document.getElementById('login-screen').style.display = 'none';
-                    document.getElementById('admin-page').style.display = 'block';
-                    
-                    // Inicializar dados do admin
-                    inicializarPaginaAdmin();
-                    
-                    // Atualizar timer de sessão
-                    atualizarTimerSessao();
-                    return true;
-                } else {
-                    // Sessão expirada
-                    sessionStorage.removeItem('admin_autenticado');
-                    sessionStorage.removeItem('admin_expiracao');
-                }
+            if (!senha) {
+                const errorElement = document.getElementById('login-error');
+                errorElement.textContent = 'Digite a senha de administrador.';
+                errorElement.style.display = 'block';
+                return;
             }
             
-            return false;
-        }
-        
-        // Inicializar página de admin
-        function inicializarPaginaAdmin() {
-            // Carregar categorias no select
-            const selectCategoria = document.getElementById('categoria');
-            selectCategoria.innerHTML = '<option value="">Selecione</option>';
-            
-            CONFIG.CATEGORIAS.forEach(categoria => {
-                const option = document.createElement('option');
-                option.value = categoria.id;
-                option.textContent = `${categoria.icone} ${categoria.nome}`;
-                selectCategoria.appendChild(option);
-            });
-            
-            // Renderizar tabela de produtos
-            renderizarTabela();
-        }
-        
-        // Atualizar timer de sessão
-        function atualizarTimerSessao() {
-            const expiracaoStr = sessionStorage.getItem('admin_expiracao');
-            
-            if (expiracaoStr) {
-                const expiracao = new Date(expiracaoStr);
-                const agora = new Date();
+            try {
+                // Mostrar mensagem de carregamento
+                const errorElement = document.getElementById('login-error');
+                errorElement.textContent = 'Verificando senha...';
+                errorElement.style.display = 'block';
                 
-                if (agora < expiracao) {
-                    const diferencaMs = expiracao - agora;
-                    const minutos = Math.floor(diferencaMs / 60000);
-                    const segundos = Math.floor((diferencaMs % 60000) / 1000);
-                    
-                    document.getElementById('tempo-sessao').textContent = 
-                        `Sessão expira em ${minutos}m ${segundos}s`;
-                        
-                    // Renovar sessão se estiver próxima de expirar
-                    if (minutos < 5) {
-                        renovarSessao();
-                    }
-                    
-                    // Atualizar a cada segundo
-                    setTimeout(atualizarTimerSessao, 1000);
+                // Verificar se a senha está correta
+                const senhaCorreta = await db.verificarAdmin(senha);
+                console.log('Resultado da verificação:', senhaCorreta);
+                
+                if (senhaCorreta) {
+                    // Salvar sessão
+                    sessionStorage.setItem('admin_logado', 'true');
+                    document.getElementById('login-section').style.display = 'none';
+                    document.getElementById('admin-section').style.display = 'block';
+                    carregarProdutos();
+                    console.log('Login bem-sucedido!');
                 } else {
-                    // Sessão expirada
-                    alert('Sua sessão expirou. Por favor, faça login novamente.');
-                    logout();
+                    errorElement.textContent = 'Senha incorreta. Tente novamente.';
+                    errorElement.style.display = 'block';
+                    console.log('Falha no login!');
+                    
+                    // Adicionar botão para resetar senha
+                    errorElement.innerHTML += '<br><button id="btn-resetar-senha" class="btn" style="margin-top:10px;">Resetar Senha</button>';
+                    document.getElementById('btn-resetar-senha').addEventListener('click', async () => {
+                        if (confirm('Tem certeza que deseja resetar a senha para o padrão (admin123)?')) {
+                            const resetado = await db.resetarSenha();
+                            if (resetado) {
+                                alert('Senha resetada para: admin123');
+                                errorElement.style.display = 'none';
+                            } else {
+                                alert('Erro ao resetar senha. Tente novamente.');
+                            }
+                        }
+                    });
                 }
+            } catch (error) {
+                console.error('Erro no login:', error);
+                const errorElement = document.getElementById('login-error');
+                errorElement.textContent = 'Erro ao fazer login. Tente novamente.';
+                errorElement.style.display = 'block';
             }
         }
         
-        // Renovar sessão
-        function renovarSessao() {
-            const agora = new Date();
-            const expiracao = new Date(agora.getTime() + CONFIG.TEMPO_EXPIRACAO_SESSAO * 60000);
-            sessionStorage.setItem('admin_expiracao', expiracao.toISOString());
-        }
-        
-        // Verificar login
-        document.getElementById('login-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const senha = document.getElementById('senha').value;
-            
-            if (senha === CONFIG.SENHA_ADMIN) {
-                // Login com sucesso
-                const agora = new Date();
-                const expiracao = new Date(agora.getTime() + CONFIG.TEMPO_EXPIRACAO_SESSAO * 60000);
-                
-                sessionStorage.setItem('admin_autenticado', 'true');
-                sessionStorage.setItem('admin_expiracao', expiracao.toISOString());
-                
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('admin-page').style.display = 'block';
-                
-                // Inicializar dados do admin
-                inicializarPaginaAdmin();
-                
-                // Iniciar contador de sessão
-                atualizarTimerSessao();
+        // Verificar sessão ao carregar a página
+        function verificarSessao() {
+            const adminLogado = sessionStorage.getItem('admin_logado');
+            if (adminLogado === 'true') {
+                document.getElementById('login-section').style.display = 'none';
+                document.getElementById('admin-section').style.display = 'block';
+                carregarProdutos();
             } else {
-                // Senha incorreta
-                const mensagem = document.getElementById('login-mensagem');
-                mensagem.textContent = 'Senha incorreta! Tente novamente.';
-                mensagem.className = 'mensagem erro';
-                mensagem.style.display = 'block';
-                
-                // Limpar após 3 segundos
-                setTimeout(() => {
-                    mensagem.style.display = 'none';
-                }, 3000);
+                document.getElementById('login-section').style.display = 'block';
+                document.getElementById('admin-section').style.display = 'none';
             }
+        }
+        
+        // Chamar verificação de sessão ao carregar a página
+        verificarSessao();
+        
+        document.getElementById('btn-logout').addEventListener('click', () => {
+            sessionStorage.removeItem('admin_logado');
+            document.getElementById('login-section').style.display = 'block';
+            document.getElementById('admin-section').style.display = 'none';
+            document.getElementById('senha-admin').value = '';
+            document.getElementById('login-error').style.display = 'none';
         });
         
-        // Logout
-        function logout() {
-            sessionStorage.removeItem('admin_autenticado');
-            sessionStorage.removeItem('admin_expiracao');
-            document.getElementById('login-screen').style.display = 'block';
-            document.getElementById('admin-page').style.display = 'none';
-            document.getElementById('senha').value = '';
+        // Gerenciamento de abas
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                const tabId = tab.dataset.tab;
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(`tab-${tabId}`).classList.add('active');
+            });
+        });
+        
+        // Gerenciamento de produtos
+        async function carregarProdutos() {
+            try {
+                const produtos = await db.obterTodos();
+                const container = document.getElementById('lista-produtos');
+                container.innerHTML = '';
+                
+                if (produtos.length === 0) {
+                    container.innerHTML = '<p>Nenhum produto cadastrado.</p>';
+                    return;
+                }
+                
+                produtos.forEach(produto => {
+                    const item = document.createElement('div');
+                    item.className = 'produto-item';
+                    
+                    // Verificar a imagem
+                    const imgSrc = produto.imagem || CONFIG.sistema.imagemPadrao;
+                    
+                    item.innerHTML = `
+                        <img src="${imgSrc}" alt="${produto.nome}" onerror="this.onerror=null; this.src='${CONFIG.sistema.imagemPadrao}'; this.alt='Imagem indisponível';">
+                        <div class="produto-info">
+                            <h3>${produto.nome}</h3>
+                            <p>R$ ${produto.preco.toFixed(2).replace('.', ',')} - Categoria: ${produto.categoria}</p>
+                        </div>
+                        <div class="produto-acoes">
+                            <button class="btn btn-editar" data-id="${produto.id}">Editar</button>
+                            <button class="btn btn-danger btn-excluir" data-id="${produto.id}">Excluir</button>
+                        </div>
+                    `;
+                    
+                    container.appendChild(item);
+                });
+                
+                // Adicionar eventos aos botões
+                document.querySelectorAll('.btn-editar').forEach(btn => {
+                    btn.addEventListener('click', () => editarProduto(parseInt(btn.dataset.id)));
+                });
+                
+                document.querySelectorAll('.btn-excluir').forEach(btn => {
+                    btn.addEventListener('click', () => excluirProduto(parseInt(btn.dataset.id)));
+                });
+            } catch (error) {
+                console.error('Erro ao carregar produtos:', error);
+                mostrarMensagem('form-error', 'Erro ao carregar produtos. Tente novamente.');
+            }
         }
         
-        document.getElementById('logout-btn').addEventListener('click', logout);
-        
-        // Função para renderizar produtos na tabela
-        async function renderizarTabela() {
-            const produtos = await db.obterTodos();
-            const tbody = document.querySelector('#tabela-produtos tbody');
-            tbody.innerHTML = '';
-            
-            produtos.forEach(produto => {
-                // Encontrar categoria na configuração
-                const categoriaCfg = CONFIG.CATEGORIAS.find(cat => cat.id === produto.categoria);
-                const categoriaTexto = categoriaCfg ? `${categoriaCfg.icone} ${categoriaCfg.nome}` : produto.categoria;
+        // Função para editar produto
+        async function editarProduto(id) {
+            try {
+                produtoEditando = await db.buscarPorId(id);
+                if (!produtoEditando) return;
                 
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td><img src="${produto.imagem}" alt="${produto.nome}" class="produto-img"></td>
-                    <td>${produto.nome}</td>
-                    <td>${CONFIG.MOEDA} ${produto.preco.toFixed(2).replace('.', ',')}</td>
-                    <td><span class="categoria-label categoria-${produto.categoria}">${categoriaTexto}</span></td>
-                    <td>
-                        <button class="acao-btn editar" data-id="${produto.id}">Editar</button>
-                        <button class="acao-btn" data-id="${produto.id}">Excluir</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-            
-            // Adicionar eventos aos botões
-            document.querySelectorAll('.acao-btn.editar').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const id = parseInt(e.target.dataset.id);
-                    carregarProduto(id);
-                });
-            });
-            
-            document.querySelectorAll('.acao-btn:not(.editar)').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const id = parseInt(e.target.dataset.id);
-                    excluirProduto(id);
-                });
-            });
-        }
-        
-        // Função para carregar produto no formulário para edição
-        async function carregarProduto(id) {
-            const produto = await db.buscarPorId(id);
-            
-            if (produto) {
-                document.getElementById('produto-id').value = produto.id;
-                document.getElementById('nome').value = produto.nome;
-                document.getElementById('preco').value = produto.preco;
-                document.getElementById('categoria').value = produto.categoria;
-                document.getElementById('imagem').value = produto.imagem;
+                document.getElementById('produto-id').value = produtoEditando.id;
+                document.getElementById('produto-nome').value = produtoEditando.nome;
+                document.getElementById('produto-preco').value = produtoEditando.preco;
+                document.getElementById('produto-categoria').value = produtoEditando.categoria;
+                document.getElementById('produto-imagem').value = produtoEditando.imagem || '';
                 
+                // Mostrar a prévia da imagem
+                const previewImg = document.getElementById('preview-imagem');
+                if (produtoEditando.imagem) {
+                    previewImg.src = produtoEditando.imagem;
+                    previewImg.style.display = 'block';
+                } else {
+                    previewImg.style.display = 'none';
+                }
+                
+                document.getElementById('btn-cancelar').style.display = 'inline-block';
                 document.getElementById('btn-salvar').textContent = 'Atualizar Produto';
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                
+                // Scroll para o formulário
+                document.querySelector('.admin-section').scrollIntoView({ behavior: 'smooth' });
+            } catch (error) {
+                console.error('Erro ao editar produto:', error);
+                mostrarMensagem('form-error', 'Erro ao carregar produto. Tente novamente.');
             }
         }
         
         // Função para excluir produto
         async function excluirProduto(id) {
             if (confirm('Tem certeza que deseja excluir este produto?')) {
-                const removido = await db.remover(id);
-                
-                if (removido) {
-                    await renderizarTabela();
-                    mostrarMensagem('Produto excluído com sucesso!', 'sucesso');
-                } else {
-                    mostrarMensagem('Erro ao excluir produto!', 'erro');
+                try {
+                    if (await db.excluir(id)) {
+                        mostrarMensagem('form-success', 'Produto excluído com sucesso!');
+                        carregarProdutos();
+                    } else {
+                        mostrarMensagem('form-error', 'Erro ao excluir produto.');
+                    }
+                } catch (error) {
+                    console.error('Erro ao excluir produto:', error);
+                    mostrarMensagem('form-error', 'Erro ao excluir produto. Tente novamente.');
                 }
             }
         }
         
         // Função para mostrar mensagens
-        function mostrarMensagem(texto, tipo) {
-            const div = document.getElementById('mensagem');
-            div.className = `mensagem ${tipo}`;
-            div.textContent = texto;
+        function mostrarMensagem(elementId, mensagem) {
+            const element = document.getElementById(elementId);
+            element.textContent = mensagem;
+            element.style.display = 'block';
+            
             setTimeout(() => {
-                div.textContent = '';
-                div.className = '';
+                element.style.display = 'none';
             }, 3000);
         }
         
-        // Manipular envio do formulário
-        document.getElementById('form-produto').addEventListener('submit', async function(e) {
-            e.preventDefault();
+        // Upload de imagem
+        document.getElementById('produto-imagem-upload').addEventListener('change', async function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
             
-            const id = document.getElementById('produto-id').value;
-            const nome = document.getElementById('nome').value;
-            const preco = parseFloat(document.getElementById('preco').value);
-            const categoria = document.getElementById('categoria').value;
-            const imagem = document.getElementById('imagem').value;
+            // Verificar tamanho
+            if (file.size > CONFIG.sistema.limiteTamanhoImagem) {
+                mostrarMensagem('form-error', `Imagem muito grande. Tamanho máximo: ${CONFIG.sistema.limiteTamanhoImagem / 1024 / 1024}MB`);
+                return;
+            }
             
-            const produto = {
-                nome,
-                preco,
-                categoria,
-                imagem
-            };
+            // Verificar tipo
+            if (!CONFIG.sistema.tiposArquivosPermitidos.includes(file.type)) {
+                mostrarMensagem('form-error', 'Tipo de arquivo não permitido. Use JPEG, PNG, GIF ou WEBP.');
+                return;
+            }
             
             try {
-                if (id) {
-                    // Editando produto existente
-                    produto.id = parseInt(id);
-                    await db.atualizar(produto);
-                    mostrarMensagem('Produto atualizado com sucesso!', 'sucesso');
-                } else {
-                    // Adicionando novo produto
-                    await db.adicionar(produto);
-                    mostrarMensagem('Produto adicionado com sucesso!', 'sucesso');
+                // Converter imagem para base64
+                const imagemBase64 = await db.converterImagemParaBase64(file);
+                
+                // Atualizar preview
+                const previewImg = document.getElementById('preview-imagem');
+                previewImg.src = imagemBase64;
+                previewImg.style.display = 'block';
+                
+                // Armazenar a imagem para usar ao salvar
+                imagemUpload = imagemBase64;
+            } catch (error) {
+                mostrarMensagem('form-error', 'Erro ao processar imagem: ' + error.message);
+            }
+        });
+        
+        // Lidar com o formulário de produto
+        document.getElementById('form-produto').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            try {
+                const id = document.getElementById('produto-id').value;
+                const nome = document.getElementById('produto-nome').value;
+                const preco = parseFloat(document.getElementById('produto-preco').value);
+                const categoria = document.getElementById('produto-categoria').value;
+                let imagem = document.getElementById('produto-imagem').value;
+                
+                // Validações básicas
+                if (!nome || nome.trim() === '') {
+                    throw new Error('Nome do produto é obrigatório.');
                 }
                 
-                await renderizarTabela();
+                if (isNaN(preco) || preco <= 0) {
+                    throw new Error('Preço inválido. Informe um valor positivo.');
+                }
                 
-                // Limpar formulário
-                this.reset();
-                document.getElementById('produto-id').value = '';
-                document.getElementById('btn-salvar').textContent = 'Salvar Produto';
+                if (!categoria) {
+                    throw new Error('Selecione uma categoria.');
+                }
+                
+                // Se há uma imagem temporária de upload, usar ela
+                if (imagemUpload) {
+                    imagem = imagemUpload;
+                }
+                
+                // Criar objeto do produto
+                const produto = {
+                    nome,
+                    preco,
+                    categoria,
+                    imagem
+                };
+                
+                let sucesso = false;
+                
+                // Atualizar ou adicionar novo produto
+                if (id) {
+                    produto.id = parseInt(id);
+                    sucesso = await db.atualizar(produto);
+                    if (sucesso) {
+                        mostrarMensagem('form-success', 'Produto atualizado com sucesso!');
+                    }
+                } else {
+                    const novoProduto = await db.adicionar(produto);
+                    if (novoProduto) {
+                        sucesso = true;
+                        mostrarMensagem('form-success', 'Produto adicionado com sucesso!');
+                    }
+                }
+                
+                if (sucesso) {
+                    // Limpar formulário
+                    document.getElementById('form-produto').reset();
+                    document.getElementById('produto-id').value = '';
+                    document.getElementById('btn-cancelar').style.display = 'none';
+                    document.getElementById('btn-salvar').textContent = 'Salvar Produto';
+                    document.getElementById('preview-imagem').style.display = 'none';
+                    
+                    // Recarregar lista
+                    await carregarProdutos();
+                    
+                    // Resetar variáveis
+                    produtoEditando = null;
+                    imagemUpload = null;
+                }
             } catch (error) {
                 console.error('Erro ao salvar produto:', error);
-                mostrarMensagem('Erro ao salvar produto. Por favor, tente novamente.', 'erro');
+                mostrarMensagem('form-error', error.message || 'Erro ao salvar produto. Tente novamente.');
             }
         });
         
-        // Verificar autenticação ao carregar a página
-        document.addEventListener('DOMContentLoaded', () => {
-            verificarAutenticacao();
+        // Botão cancelar edição
+        document.getElementById('btn-cancelar').addEventListener('click', () => {
+            document.getElementById('form-produto').reset();
+            document.getElementById('produto-id').value = '';
+            document.getElementById('btn-cancelar').style.display = 'none';
+            document.getElementById('btn-salvar').textContent = 'Salvar Produto';
+            document.getElementById('preview-imagem').style.display = 'none';
+            produtoEditando = null;
+            imagemUpload = null;
         });
-    </script>
-    
-    <!-- Script para verificar se o CSS e JS foram carregados corretamente -->
-    <script>
-        function verificarRecursos() {
-            // Verificar se o CSS está carregado
-            const styleLoaded = Array.from(document.styleSheets).some(sheet => {
-                try {
-                    return sheet.href && sheet.href.includes('style.css');
-                } catch (e) {
-                    return false;
-                }
-            });
+        
+        // Preview de imagem
+        document.getElementById('produto-imagem').addEventListener('input', function() {
+            const previewImg = document.getElementById('preview-imagem');
+            if (this.value) {
+                previewImg.src = this.value;
+                previewImg.style.display = 'block';
+                previewImg.onerror = function() {
+                    this.src = CONFIG.sistema.imagemPadrao;
+                };
+            } else {
+                previewImg.style.display = 'none';
+            }
+        });
+        
+        // Alterar senha
+        document.getElementById('btn-alterar-senha').addEventListener('click', () => {
+            const senhaAtual = document.getElementById('senha-atual').value;
+            const novaSenha = document.getElementById('nova-senha').value;
+            const confirmarSenha = document.getElementById('confirmar-senha').value;
             
-            if (!styleLoaded) {
-                console.warn('CSS não carregado. Tentando novamente...');
-                const link = document.createElement('link');
-                link.rel = 'stylesheet';
-                link.href = '/style.css?nocache=' + new Date().getTime();
-                document.head.appendChild(link);
+            // Validar campos
+            if (!senhaAtual || !novaSenha || !confirmarSenha) {
+                mostrarMensagem('senha-error', 'Todos os campos são obrigatórios.');
+                return;
             }
-        }
+            
+            if (novaSenha !== confirmarSenha) {
+                mostrarMensagem('senha-error', 'As senhas não coincidem.');
+                return;
+            }
+            
+            // Tentar alterar a senha
+            if (db.alterarSenhaAdmin(senhaAtual, novaSenha)) {
+                mostrarMensagem('senha-success', 'Senha alterada com sucesso!');
+                document.getElementById('senha-atual').value = '';
+                document.getElementById('nova-senha').value = '';
+                document.getElementById('confirmar-senha').value = '';
+            } else {
+                mostrarMensagem('senha-error', 'Senha atual incorreta.');
+            }
+        });
         
-        // Verificar após 2 segundos
-        setTimeout(verificarRecursos, 2000);
+        // Exportar dados
+        document.getElementById('btn-exportar').addEventListener('click', () => {
+            const dadosJSON = db.exportarDados();
+            const blob = new Blob([dadosJSON], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `jb-importes-backup-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+        
+        // Importar dados
+        document.getElementById('btn-importar').addEventListener('click', () => {
+            const fileInput = document.getElementById('arquivo-importacao');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('Selecione um arquivo para importar.');
+                return;
+            }
+            
+            if (file.type !== 'application/json') {
+                alert('O arquivo deve ser do tipo JSON.');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    if (db.importarDados(e.target.result)) {
+                        alert('Dados importados com sucesso!');
+                        carregarProdutos();
+                        fileInput.value = '';
+                    } else {
+                        alert('Falha ao importar dados. Formato inválido.');
+                    }
+                } catch (error) {
+                    alert('Erro ao importar: ' + error.message);
+                }
+            };
+            reader.readAsText(file);
+        });
+        
+        // Permitir login com Enter
+        document.getElementById('senha-admin').addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                fazerLogin();
+            }
+        });
     </script>
 </body>
 </html> 
