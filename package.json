@@ -1,7 +1,7 @@
 {
   "name": "jb-importes",
   "version": "1.0.0",
-  "description": "Sistema de gerenciamento da JB IMPORTES",
+  "description": "Loja virtual JB Importes",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -12,6 +12,6 @@
     "cors": "^2.8.5"
   },
   "devDependencies": {
-    "nodemon": "^2.0.22"
+    "nodemon": "^3.0.2"
   }
 } 

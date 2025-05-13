@@ -70,10 +70,10 @@ const db = {
                 body: JSON.stringify(produto)
             });
             if (!response.ok) throw new Error('Erro ao atualizar produto');
-            return true;
+            return await response.json();
         } catch (e) {
             console.error('Erro ao atualizar produto:', e);
-            return false;
+            return null;
         }
     },
     
@@ -104,9 +104,9 @@ const db = {
     },
     
     // Filtrar produtos por categoria
-    filtrarPorCategoria: function(categoria) {
+    async filtrarPorCategoria(categoria) {
         try {
-            const produtos = this.obterTodos();
+            const produtos = await this.obterTodos();
             return categoria === 'tudo' ? produtos : produtos.filter(p => p.categoria === categoria);
         } catch (e) {
             console.error('Erro ao filtrar por categoria:', e);
@@ -115,9 +115,9 @@ const db = {
     },
     
     // Filtrar produtos por preço
-    filtrarPorPreco: function(faixaPreco) {
+    async filtrarPorPreco(faixaPreco) {
         try {
-            const produtos = this.obterTodos();
+            const produtos = await this.obterTodos();
             if (faixaPreco === 'tudo') return produtos;
             
             if (faixaPreco === 'ate50') {
@@ -140,15 +140,9 @@ const db = {
     // Verificar se o usuário é administrador
     async verificarAdmin(senha) {
         try {
-            // Se estiver em desenvolvimento local
-            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-                return senha === 'admin123';
-            }
-            
             const response = await fetch(`${API_URL}/admin`);
             if (!response.ok) throw new Error('Erro ao verificar senha');
             const admin = await response.json();
-            console.log('Verificando senha:', { senhaFornecida: senha, senhaCorreta: admin.senha });
             return senha === admin.senha;
         } catch (e) {
             console.error('Erro ao verificar senha:', e);
@@ -182,19 +176,34 @@ const db = {
     },
     
     // Exportar dados em formato JSON
-    exportarDados: function() {
-        return JSON.stringify(this.obterTodos(), null, 2);
+    async exportarDados() {
+        try {
+            const produtos = await this.obterTodos();
+            return JSON.stringify(produtos, null, 2);
+        } catch (e) {
+            console.error('Erro ao exportar dados:', e);
+            return '[]';
+        }
     },
     
     // Importar dados a partir de JSON
-    importarDados: function(jsonData) {
+    async importarDados(jsonData) {
         try {
             const dados = JSON.parse(jsonData);
-            if (Array.isArray(dados)) {
-                localStorage.setItem(PRODUTOS_KEY, JSON.stringify(dados));
-                return true;
+            if (!Array.isArray(dados)) return false;
+
+            // Limpar produtos existentes
+            const produtos = await this.obterTodos();
+            for (const produto of produtos) {
+                await this.excluir(produto.id);
             }
-            return false;
+
+            // Adicionar novos produtos
+            for (const produto of dados) {
+                await this.adicionar(produto);
+            }
+
+            return true;
         } catch (e) {
             console.error('Erro ao importar dados:', e);
             return false;
@@ -212,7 +221,6 @@ const db = {
                 body: JSON.stringify({ senha: 'admin123' })
             });
             if (!response.ok) throw new Error('Erro ao resetar senha');
-            console.log('Senha resetada para o padrão: admin123');
             return true;
         } catch (e) {
             console.error('Erro ao resetar senha:', e);
