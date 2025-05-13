@@ -6,8 +6,14 @@ function abrirModal(produto) {
     
     // Garantir que a imagem existe
     const imgElement = document.getElementById('modal-produto-img');
-    imgElement.src = produto.imagem || '';
+    const imgSrc = verificarCaminhoImagem(produto.imagem);
+    imgElement.src = imgSrc;
     imgElement.alt = produto.nome;
+    imgElement.onerror = function() {
+        this.onerror = null;
+        this.src = 'img/imagem-indisponivel.jpg';
+        this.alt = 'Imagem indisponível';
+    };
     
     document.getElementById('modal-produto-preco').textContent = formatarPreco(produto.preco);
     document.getElementById('tamanho').value = "";
@@ -216,47 +222,61 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     // Carregar dados iniciais
     try {
-        if (typeof db !== 'undefined') {
-            // Forçar atualização dos produtos a partir do servidor
-            produtos = await db.init();
-            if (!produtos || produtos.length === 0) {
-                // Se não conseguir dados do servidor, tenta obter todos novamente
-                produtos = await db.obterTodos();
+        // Tentar carregar os produtos do servidor REST diretamente
+        const serverUrl = window.location.origin;
+        try {
+            const response = await fetch(`${serverUrl}/api/produtos`);
+            if (response.ok) {
+                produtos = await response.json();
+                console.log('Produtos carregados via API REST:', produtos.length);
+            } else {
+                throw new Error('Não foi possível carregar os produtos via API REST');
             }
-            console.log('Produtos carregados do servidor:', produtos.length);
-        } else {
-            console.warn('Banco de dados não disponível, carregando produtos padrão');
-            // Dados padrão caso db.js não esteja carregado
-            produtos = [
-                {
-                    id: 1,
-                    nome: "Camiseta Básica",
-                    preco: 49.90,
-                    categoria: "masculino",
-                    imagem: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80"
-                },
-                {
-                    id: 2,
-                    nome: "Vestido Floral",
-                    preco: 89.90,
-                    categoria: "feminino",
-                    imagem: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=400&q=80"
-                },
-                {
-                    id: 3,
-                    nome: "Calça Jeans",
-                    preco: 99.90,
-                    categoria: "masculino",
-                    imagem: "https://images.unsplash.com/photo-1469398715555-76331a6c7fa0?auto=format&fit=crop&w=400&q=80"
-                },
-                {
-                    id: 4,
-                    nome: "WMarlon Special",
-                    preco: 999.99,
-                    categoria: "masculino",
-                    imagem: "img/wm.jpg"
+        } catch (apiError) {
+            console.warn('Erro ao carregar via API REST, tentando método alternativo:', apiError);
+            
+            if (typeof db !== 'undefined') {
+                // Forçar atualização dos produtos a partir do servidor
+                produtos = await db.init();
+                if (!produtos || produtos.length === 0) {
+                    // Se não conseguir dados do servidor, tenta obter todos novamente
+                    produtos = await db.obterTodos();
                 }
-            ];
+                console.log('Produtos carregados do servidor via db.js:', produtos.length);
+            } else {
+                console.warn('Banco de dados não disponível, carregando produtos padrão');
+                // Dados padrão caso db.js não esteja carregado
+                produtos = [
+                    {
+                        id: 1,
+                        nome: "Camiseta Básica",
+                        preco: 49.90,
+                        categoria: "masculino",
+                        imagem: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80"
+                    },
+                    {
+                        id: 2,
+                        nome: "Vestido Floral",
+                        preco: 89.90,
+                        categoria: "feminino",
+                        imagem: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=400&q=80"
+                    },
+                    {
+                        id: 3,
+                        nome: "Calça Jeans",
+                        preco: 99.90,
+                        categoria: "masculino",
+                        imagem: "https://images.unsplash.com/photo-1469398715555-76331a6c7fa0?auto=format&fit=crop&w=400&q=80"
+                    },
+                    {
+                        id: 4,
+                        nome: "WMarlon Special",
+                        preco: 999.99,
+                        categoria: "masculino",
+                        imagem: "img/wm.jpg"
+                    }
+                ];
+            }
         }
         
         // Renderizar produtos

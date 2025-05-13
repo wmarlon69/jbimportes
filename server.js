@@ -10,8 +10,13 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 // Importar o banco de dados adequado
 let db;
-// Usar o MongoDB local que você instalou
-db = require('./db-mongo-local');
+if (isProduction) {
+    // Em produção (Vercel), usar MongoDB Atlas
+    db = require('./db-mongo');
+} else {
+    // Em desenvolvimento local, usar MongoDB local
+    db = require('./db-mongo-local');
+}
 
 // Middleware
 app.use(cors());
@@ -152,7 +157,7 @@ app.get('/api/status', (req, res) => {
     res.json({ 
         status: 'online',
         dbStatus: dbInitialized ? 'conectado' : 'desconectado',
-        dbType: 'MongoDB local'
+        dbType: isProduction ? 'MongoDB Atlas' : 'MongoDB local'
     });
 });
 
@@ -173,7 +178,7 @@ async function iniciarServidor() {
         console.log(`Para acessar de outros dispositivos na rede, use:`);
         console.log(`http://192.168.1.2:${PORT}`);
         console.log(`Status do banco de dados: ${dbInitialized ? 'CONECTADO' : 'DESCONECTADO'}`);
-        console.log(`Tipo de banco de dados: MongoDB local`);
+        console.log(`Tipo de banco de dados: ${isProduction ? 'MongoDB Atlas' : 'MongoDB local'}`);
         
         if (!dbInitialized) {
             console.log('O servidor está rodando mas o banco de dados não foi inicializado.');
