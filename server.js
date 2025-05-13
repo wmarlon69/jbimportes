@@ -205,7 +205,7 @@ app.get('/api/produtos/preco/:faixa', (req, res) => {
 });
 
 // Iniciar servidor
-app.listen(PORT, () => {
-    console.log(`Servidor rodando na porta ${PORT}`);
-    console.log(`Acesse http://localhost:${PORT} para visualizar a loja`);
+app.listen(PORT, '192.168.1.2', () => {
+    console.log(`Servidor rodando em http://192.168.1.2:${PORT}`);
+    console.log(`Acesse http://192.168.1.2:${PORT} para visualizar a loja`);
 }); 
