@@ -13,7 +13,23 @@ const db = {
      */
     init: async function() {
         console.log('Banco de dados remoto inicializado');
-        // Não é necessário fazer nada aqui, pois o servidor já inicializa o banco
+        try {
+            // Forçar primeira obtenção de produtos do servidor ao inicializar
+            const response = await fetch(`${API_URL}/produtos`);
+            if (response.ok) {
+                console.log('Conexão com o servidor estabelecida com sucesso');
+                const produtos = await response.json();
+                // Atualizar o cache local com os dados do servidor
+                this.salvarDadosLocais(produtos);
+                return produtos;
+            } else {
+                console.warn('Servidor não está respondendo, usando cache local');
+                return this.obterDadosLocais();
+            }
+        } catch (error) {
+            console.error('Erro ao inicializar banco de dados:', error);
+            return this.obterDadosLocais();
+        }
     },
 
     /**
@@ -26,7 +42,10 @@ const db = {
             if (!response.ok) {
                 throw new Error('Erro ao obter produtos');
             }
-            return await response.json();
+            const produtos = await response.json();
+            // Atualizar o cache local com os dados mais recentes
+            this.salvarDadosLocais(produtos);
+            return produtos;
         } catch (error) {
             console.error('Erro ao buscar produtos:', error);
             // Fallback para o banco local se o servidor estiver indisponível
@@ -53,7 +72,13 @@ const db = {
                 throw new Error('Erro ao adicionar produto');
             }
             
-            return await response.json();
+            const produtoAdicionado = await response.json();
+            
+            // Após adicionar um produto com sucesso, atualizar o cache local
+            // obtendo todos os produtos do servidor para garantir sincronização
+            await this.obterTodos();
+            
+            return produtoAdicionado;
         } catch (error) {
             console.error('Erro ao adicionar produto:', error);
             // Fallback para o banco local
@@ -80,7 +105,12 @@ const db = {
                 throw new Error('Erro ao atualizar produto');
             }
             
-            return await response.json();
+            const produtoAtualizado = await response.json();
+            
+            // Após atualizar um produto com sucesso, atualizar cache local
+            await this.obterTodos();
+            
+            return produtoAtualizado;
         } catch (error) {
             console.error('Erro ao atualizar produto:', error);
             // Fallback para o banco local
@@ -99,7 +129,13 @@ const db = {
                 method: 'DELETE'
             });
             
-            return response.ok;
+            if (response.ok) {
+                // Após remover um produto com sucesso, atualizar cache local
+                await this.obterTodos();
+                return true;
+            }
+            
+            return false;
         } catch (error) {
             console.error('Erro ao remover produto:', error);
             // Fallback para o banco local

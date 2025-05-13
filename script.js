@@ -171,7 +171,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Carregar dados iniciais
     try {
         if (typeof db !== 'undefined') {
-            produtos = await db.obterTodos();
+            // Forçar atualização dos produtos a partir do servidor
+            produtos = await db.init();
+            if (!produtos || produtos.length === 0) {
+                // Se não conseguir dados do servidor, tenta obter todos novamente
+                produtos = await db.obterTodos();
+            }
+            console.log('Produtos carregados do servidor:', produtos.length);
         } else {
             console.warn('Banco de dados não disponível, carregando produtos padrão');
             // Dados padrão caso db.js não esteja carregado
@@ -200,8 +206,25 @@ document.addEventListener('DOMContentLoaded', async () => {
             ];
         }
         
-        // Mostrar os produtos na página
-        await filtrarProdutos();
+        // Renderizar produtos
+        renderizarProdutosFiltrados(produtos);
+        
+        // Configurar atualização periódica dos produtos a cada 60 segundos
+        setInterval(async () => {
+            try {
+                if (typeof db !== 'undefined') {
+                    console.log('Atualizando produtos do servidor...');
+                    produtos = await db.obterTodos();
+                    // Apenas re-renderize se os filtros atuais estiverem em "tudo"
+                    if (categoriaSelecionada === 'tudo' && precoSelecionado === 'tudo') {
+                        renderizarProdutosFiltrados(produtos);
+                    }
+                }
+            } catch (error) {
+                console.error('Erro na atualização periódica:', error);
+            }
+        }, 60000); // 60 segundos
+        
     } catch (error) {
         console.error('Erro ao inicializar a página:', error);
         document.getElementById("produtos").innerHTML = '<p>Erro ao carregar produtos. Por favor, tente novamente mais tarde.</p>';
