@@ -266,7 +266,7 @@
 
     <!-- Carregando arquivo de configuração -->
     <script src="config.js"></script>
-    <script src="db.js"></script>
+    <script src="db-remote.js"></script>
     <script>
         // Verificar autenticação
         function verificarAutenticacao() {
@@ -401,8 +401,8 @@
         document.getElementById('logout-btn').addEventListener('click', logout);
         
         // Função para renderizar produtos na tabela
-        function renderizarTabela() {
-            const produtos = db.obterTodos();
+        async function renderizarTabela() {
+            const produtos = await db.obterTodos();
             const tbody = document.querySelector('#tabela-produtos tbody');
             tbody.innerHTML = '';
             
@@ -442,8 +442,8 @@
         }
         
         // Função para carregar produto no formulário para edição
-        function carregarProduto(id) {
-            const produto = db.buscarPorId(id);
+        async function carregarProduto(id) {
+            const produto = await db.buscarPorId(id);
             
             if (produto) {
                 document.getElementById('produto-id').value = produto.id;
@@ -458,12 +458,12 @@
         }
         
         // Função para excluir produto
-        function excluirProduto(id) {
+        async function excluirProduto(id) {
             if (confirm('Tem certeza que deseja excluir este produto?')) {
-                const removido = db.remover(id);
+                const removido = await db.remover(id);
                 
                 if (removido) {
-                    renderizarTabela();
+                    await renderizarTabela();
                     mostrarMensagem('Produto excluído com sucesso!', 'sucesso');
                 } else {
                     mostrarMensagem('Erro ao excluir produto!', 'erro');
@@ -483,7 +483,7 @@
         }
         
         // Manipular envio do formulário
-        document.getElementById('form-produto').addEventListener('submit', function(e) {
+        document.getElementById('form-produto').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const id = document.getElementById('produto-id').value;
@@ -499,23 +499,28 @@
                 imagem
             };
             
-            if (id) {
-                // Editando produto existente
-                produto.id = parseInt(id);
-                db.atualizar(produto);
-                mostrarMensagem('Produto atualizado com sucesso!', 'sucesso');
-            } else {
-                // Adicionando novo produto
-                db.adicionar(produto);
-                mostrarMensagem('Produto adicionado com sucesso!', 'sucesso');
+            try {
+                if (id) {
+                    // Editando produto existente
+                    produto.id = parseInt(id);
+                    await db.atualizar(produto);
+                    mostrarMensagem('Produto atualizado com sucesso!', 'sucesso');
+                } else {
+                    // Adicionando novo produto
+                    await db.adicionar(produto);
+                    mostrarMensagem('Produto adicionado com sucesso!', 'sucesso');
+                }
+                
+                await renderizarTabela();
+                
+                // Limpar formulário
+                this.reset();
+                document.getElementById('produto-id').value = '';
+                document.getElementById('btn-salvar').textContent = 'Salvar Produto';
+            } catch (error) {
+                console.error('Erro ao salvar produto:', error);
+                mostrarMensagem('Erro ao salvar produto. Por favor, tente novamente.', 'erro');
             }
-            
-            renderizarTabela();
-            
-            // Limpar formulário
-            this.reset();
-            document.getElementById('produto-id').value = '';
-            document.getElementById('btn-salvar').textContent = 'Salvar Produto';
         });
         
         // Verificar autenticação ao carregar a página

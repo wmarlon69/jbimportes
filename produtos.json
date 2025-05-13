@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "nome": "Camiseta Básica",
+    "preco": 49.9,
+    "categoria": "masculino",
+    "imagem": "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80"
+  },
+  {
+    "id": 2,
+    "nome": "Vestido Floral",
+    "preco": 89.9,
+    "categoria": "feminino",
+    "imagem": "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=400&q=80"
+  },
+  {
+    "nome": "wmarlon",
+    "preco": 199.99,
+    "categoria": "masculino",
+    "imagem": "img/wm.jpg",
+    "id": 4
+  },
+  {
+    "nome": "Saia Jeans",
+    "preco": 59.2,
+    "categoria": "feminino",
+    "imagem": "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80",
+    "id": 5
+  }
+]

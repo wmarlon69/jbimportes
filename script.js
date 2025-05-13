@@ -3,8 +3,12 @@ let produtos = [];
 
 function abrirModal(produto) {
     document.getElementById('modal-produto-nome').textContent = produto.nome;
-    document.getElementById('modal-produto-img').src = produto.imagem;
-    document.getElementById('modal-produto-img').alt = produto.nome;
+    
+    // Garantir que a imagem existe
+    const imgElement = document.getElementById('modal-produto-img');
+    imgElement.src = produto.imagem || '';
+    imgElement.alt = produto.nome;
+    
     document.getElementById('modal-produto-preco').textContent = formatarPreco(produto.preco);
     document.getElementById('tamanho').value = "";
     document.getElementById('modal-compra').style.display = 'flex';
@@ -40,42 +44,52 @@ function formatarPreco(valor) {
 }
 
 // Função para carregar produtos do banco de dados
-function carregarProdutos() {
-    // Verificar se o banco de dados está disponível
-    if (typeof db !== 'undefined') {
-        // Usar o banco de dados
-        if (categoriaSelecionada !== 'tudo' && precoSelecionado !== 'tudo') {
-            // Filtrar por categoria e preço
-            let produtosFiltrados = db.filtrarPorCategoria(categoriaSelecionada);
-            
-            // Aplicar filtro de preço
-            if (precoSelecionado === "ate50") {
-                produtosFiltrados = produtosFiltrados.filter(p => p.preco <= 50);
-            } else if (precoSelecionado === "ate100") {
-                produtosFiltrados = produtosFiltrados.filter(p => p.preco <= 100);
-            } else if (precoSelecionado === "acima100") {
-                produtosFiltrados = produtosFiltrados.filter(p => p.preco > 100);
+async function carregarProdutos() {
+    // Mostrar indicador de carregamento
+    document.getElementById("produtos").innerHTML = '<div class="loading">Carregando produtos...</div>';
+    
+    try {
+        let produtosFiltrados = [];
+        
+        // Verificar se o banco de dados está disponível
+        if (typeof db !== 'undefined') {
+            // Usar o banco de dados
+            if (categoriaSelecionada !== 'tudo' && precoSelecionado !== 'tudo') {
+                // Filtrar por categoria e preço
+                produtosFiltrados = await db.filtrarPorCategoria(categoriaSelecionada);
+                
+                // Aplicar filtro de preço
+                if (precoSelecionado === "ate50") {
+                    produtosFiltrados = produtosFiltrados.filter(p => p.preco <= 50);
+                } else if (precoSelecionado === "ate100") {
+                    produtosFiltrados = produtosFiltrados.filter(p => p.preco <= 100);
+                } else if (precoSelecionado === "acima100") {
+                    produtosFiltrados = produtosFiltrados.filter(p => p.preco > 100);
+                }
+            } else if (categoriaSelecionada !== 'tudo') {
+                // Filtrar apenas por categoria
+                produtosFiltrados = await db.filtrarPorCategoria(categoriaSelecionada);
+            } else if (precoSelecionado !== 'tudo') {
+                // Filtrar apenas por preço
+                produtosFiltrados = await db.filtrarPorPreco(precoSelecionado);
+            } else {
+                // Sem filtros
+                produtosFiltrados = await db.obterTodos();
             }
-            
-            return produtosFiltrados;
-        } else if (categoriaSelecionada !== 'tudo') {
-            // Filtrar apenas por categoria
-            return db.filtrarPorCategoria(categoriaSelecionada);
-        } else if (precoSelecionado !== 'tudo') {
-            // Filtrar apenas por preço
-            return db.filtrarPorPreco(precoSelecionado);
         } else {
-            // Sem filtros
-            return db.obterTodos();
+            console.warn('Banco de dados não disponível, usando array de produtos estático');
+            produtosFiltrados = produtos;
         }
-    } else {
-        console.warn('Banco de dados não disponível, usando array de produtos estático');
-        return produtos;
+        
+        return produtosFiltrados;
+    } catch (error) {
+        console.error('Erro ao carregar produtos:', error);
+        return []; // Retornar array vazio em caso de erro
     }
 }
 
-function filtrarProdutos() {
-    const produtosFiltrados = carregarProdutos();
+async function filtrarProdutos() {
+    const produtosFiltrados = await carregarProdutos();
     renderizarProdutosFiltrados(produtosFiltrados);
 }
 
@@ -105,8 +119,12 @@ function renderizarProdutosFiltrados(lista) {
     lista.forEach(produto => {
         const div = document.createElement("div");
         div.className = "produto";
+        
+        // Criar a imagem com tratamento de erro
+        const imgSrc = produto.imagem || '';
+        
         div.innerHTML = `
-            <img src="${produto.imagem}" alt="${produto.nome}">
+            <img src="${imgSrc}" alt="${produto.nome}" onerror="this.onerror=null; this.src='img/imagem-indisponivel.jpg'; this.alt='Imagem indisponível';">
             <h2>${produto.nome}</h2>
             <p>${formatarPreco(produto.preco)}</p>
             <button class="comprar-btn">Comprar</button>
@@ -118,40 +136,74 @@ function renderizarProdutosFiltrados(lista) {
     });
 }
 
+// Adicionar estilos CSS para o indicador de carregamento
+function adicionarEstilosCarregamento() {
+    const style = document.createElement('style');
+    style.textContent = `
+        .loading {
+            text-align: center;
+            padding: 30px;
+            font-size: 18px;
+            color: #bfa046;
+        }
+
+        .loading:after {
+            content: "...";
+            animation: dots 1.5s steps(5, end) infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: "."; }
+            40% { content: ".."; }
+            60%, 100% { content: "..."; }
+        }
+    `;
+    document.head.appendChild(style);
+}
+
 // Inicializar a página
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    // Adicionar estilos para o indicador de carregamento
+    adicionarEstilosCarregamento();
+    
     document.querySelector('.filtro[data-categoria="tudo"]').classList.add('active');
     
     // Carregar dados iniciais
-    if (typeof db !== 'undefined') {
-        produtos = db.obterTodos();
-    } else {
-        console.warn('Banco de dados não disponível, carregando produtos padrão');
-        // Dados padrão caso db.js não esteja carregado
-        produtos = [
-            {
-                id: 1,
-                nome: "Camiseta Básica",
-                preco: 49.90,
-                categoria: "masculino",
-                imagem: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80"
-            },
-            {
-                id: 2,
-                nome: "Vestido Floral",
-                preco: 89.90,
-                categoria: "feminino",
-                imagem: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=400&q=80"
-            },
-            {
-                id: 3,
-                nome: "Calça Jeans",
-                preco: 99.90,
-                categoria: "masculino",
-                imagem: "https://imags.unsplash.com/photo-1469398715555-76331a6c7fa0?auto=format&fit=crop&w=400&q=80"
-            }
-        ];
+    try {
+        if (typeof db !== 'undefined') {
+            produtos = await db.obterTodos();
+        } else {
+            console.warn('Banco de dados não disponível, carregando produtos padrão');
+            // Dados padrão caso db.js não esteja carregado
+            produtos = [
+                {
+                    id: 1,
+                    nome: "Camiseta Básica",
+                    preco: 49.90,
+                    categoria: "masculino",
+                    imagem: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80"
+                },
+                {
+                    id: 2,
+                    nome: "Vestido Floral",
+                    preco: 89.90,
+                    categoria: "feminino",
+                    imagem: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=400&q=80"
+                },
+                {
+                    id: 3,
+                    nome: "Calça Jeans",
+                    preco: 99.90,
+                    categoria: "masculino",
+                    imagem: "https://images.unsplash.com/photo-1469398715555-76331a6c7fa0?auto=format&fit=crop&w=400&q=80"
+                }
+            ];
+        }
+        
+        // Mostrar os produtos na página
+        await filtrarProdutos();
+    } catch (error) {
+        console.error('Erro ao inicializar a página:', error);
+        document.getElementById("produtos").innerHTML = '<p>Erro ao carregar produtos. Por favor, tente novamente mais tarde.</p>';
     }
-    
-    filtrarProdutos();
 });

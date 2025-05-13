@@ -50,7 +50,7 @@
         <div class="modal-content">
             <span id="fechar-modal" class="fechar">&times;</span>
             <h2 id="modal-produto-nome"></h2>
-            <img id="modal-produto-img" src="" alt="" style="width: 100px; border-radius: 8px;">
+            <img id="modal-produto-img" src="" alt="" style="width: 100px; border-radius: 8px;" onerror="this.onerror=null; this.src='img/imagem-indisponivel.jpg'; this.alt='Imagem indisponível';">
             <p id="modal-produto-preco"></p>
             <label for="tamanho">Escolha o tamanho:</label>
             <select id="tamanho">
@@ -65,7 +65,7 @@
     </div>
     
     <script src="config.js"></script>
-    <script src="db.js"></script>
+    <script src="db-remote.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
