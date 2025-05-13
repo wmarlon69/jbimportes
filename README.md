@@ -1,81 +1,30 @@
 # JB IMPORTES - Sistema de E-commerce
 
-Este é um sistema de e-commerce para a loja JB IMPORTES, com gerenciamento de produtos e painel administrativo.
+Sistema de e-commerce para JB IMPORTES, com sistema de banco de dados, catálogo de produtos e painel administrativo.
 
-## Requisitos
+## Funcionalidades
 
-Para executar o sistema completo, você precisa ter instalado:
+- Exibição de produtos por categoria (feminino, masculino, infantil)
+- Filtros de preço
+- Painel administrativo para gerenciar produtos
+- Sistema de banco de dados usando localStorage (modo offline) e servidor Node.js (modo online)
+- Sistema de formulário de compra integrado com WhatsApp
 
-- Node.js (versão 14 ou superior)
-- npm (geralmente vem com o Node.js)
+## Instruções para Instalação
 
-## Instalação do Node.js e npm
+1. Certifique-se de ter o [Node.js](https://nodejs.org/) instalado (versão 14 ou superior)
+2. Baixe ou clone este repositório
+3. Abra um terminal na pasta do projeto
+4. Execute `npm install` para instalar as dependências
+5. Execute `npm start` ou use o arquivo `iniciar-servidor.bat` para iniciar o servidor
+6. Acesse `http://localhost:3000` no navegador
 
-### Windows
+## Acesso ao Painel Administrativo
 
-1. Acesse o site oficial do Node.js: https://nodejs.org/
-2. Baixe a versão LTS (recomendada para a maioria dos usuários)
-3. Execute o instalador baixado e siga as instruções na tela
-4. Ao finalizar a instalação, abra o Prompt de Comando (ou PowerShell) e verifique se tudo foi instalado corretamente com os comandos:
-   ```
-   node --version
-   npm --version
-   ```
+- Acesse `http://localhost:3000/admin.html`
+- Senha de acesso: `123456`
 
-### macOS
-
-1. Acesse o site oficial do Node.js: https://nodejs.org/
-2. Baixe a versão LTS para macOS
-3. Execute o instalador e siga as instruções
-4. Alternativamente, se você usar Homebrew, pode instalar com: `brew install node`
-5. Verifique a instalação com os comandos:
-   ```
-   node --version
-   npm --version
-   ```
-
-### Linux (Ubuntu/Debian)
-
-1. Abra o terminal e execute os seguintes comandos:
-   ```
-   sudo apt update
-   sudo apt install nodejs npm
-   ```
-2. Verifique a instalação:
-   ```
-   node --version
-   npm --version
-   ```
-
-## Executando o Projeto
-
-1. Após instalar o Node.js e npm, abra o terminal (Prompt de Comando, PowerShell, Terminal) e navegue até a pasta do projeto:
-   ```
-   cd caminho/para/jbimportes
-   ```
-
-2. Instale as dependências do projeto:
-   ```
-   npm install
-   ```
-
-3. Inicie o servidor:
-   ```
-   npm start
-   ```
-   
-4. O servidor será iniciado na porta 3000. Você pode acessar o site em:
-   ```
-   http://localhost:3000
-   ```
-
-5. Para acessar o painel administrativo, vá para:
-   ```
-   http://localhost:3000/admin.html
-   ```
-   Senha padrão: 123456 (pode ser alterada no arquivo config.js)
-
-## Estrutura do Projeto
+## Estrutura de Arquivos
 
 - `index.html` - Página principal da loja
 - `admin.html` - Painel administrativo
@@ -86,6 +35,16 @@ Para executar o sistema completo, você precisa ter instalado:
 - `produtos.json` - Arquivo onde os produtos são armazenados (criado automaticamente)
 
 ## Soluções para Problemas Comuns
+
+### Produtos não aparecem para outros usuários
+
+Para que os produtos adicionados apareçam para todos os usuários:
+
+1. Certifique-se que o servidor Node.js está rodando (use o arquivo `iniciar-servidor.bat`)
+2. Verifique que todos os usuários estão acessando através do endereço do servidor (http://localhost:3000)
+3. Se estiver usando em rede local, substitua "localhost" pelo endereço IP do servidor
+4. O arquivo `produtos.json` deve ter permissões de escrita para o servidor
+5. Após adicionar um produto, os outros usuários precisam recarregar a página (F5)
 
 ### Imagens não aparecem
 

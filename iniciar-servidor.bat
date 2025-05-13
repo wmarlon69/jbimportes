@@ -11,6 +11,9 @@ echo.
 echo Quando o servidor estiver rodando, acesse:
 echo http://localhost:3000
 echo.
+echo Para acessar de outros computadores na rede, use o endereco IP do servidor:
+ipconfig | findstr IPv4
+echo.
 echo Para parar o servidor, pressione CTRL+C
 echo.
 call npm start

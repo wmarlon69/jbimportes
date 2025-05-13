@@ -1,0 +1,53 @@
+======================================================
+  COMO USAR O JB IMPORTES EM UMA REDE LOCAL
+======================================================
+
+Se você deseja que vários usuários acessem a loja e o painel administrativo
+ao mesmo tempo, e que as alterações feitas por um usuário sejam vistas por
+todos os outros, siga estas instruções:
+
+1. CONFIGURAÇÃO DO SERVIDOR:
+
+   - Execute o arquivo "iniciar-servidor.bat" no computador principal
+   - Anote o endereço IPv4 que aparece (exemplo: 192.168.1.100)
+   - Mantenha o servidor rodando enquanto os usuários estiverem acessando
+
+2. ACESSO DOS OUTROS COMPUTADORES:
+
+   - Em cada computador que irá acessar a loja, abra o navegador
+   - Digite o endereço do servidor seguido da porta:
+     http://[IP_DO_SERVIDOR]:3000
+     
+     Por exemplo:
+     http://192.168.1.100:3000
+
+   - Para acessar o painel administrativo, use:
+     http://[IP_DO_SERVIDOR]:3000/admin.html
+     
+     Exemplo:
+     http://192.168.1.100:3000/admin.html
+
+3. SOLUÇÃO DE PROBLEMAS COMUNS:
+
+   a) Se os produtos não estão aparecendo para todos:
+      - Certifique-se de que todos estão usando o endereço IP do servidor
+      - Verifique se o servidor está rodando
+      - Recarregue a página após adicionar ou modificar produtos (F5)
+
+   b) Se aparecer "Esta página não pode ser exibida":
+      - Verifique se o endereço IP está correto
+      - Verifique se o servidor está rodando
+      - Certifique-se de que o firewall do Windows permite o acesso à porta 3000
+
+   c) Para liberar a porta 3000 no firewall do Windows:
+      - Painel de Controle > Sistema e Segurança > Firewall do Windows
+      - Configurações avançadas > Regras de Entrada > Nova Regra
+      - Selecione "Porta" > TCP e digite 3000 > Permitir a conexão
+      - Dê um nome como "Servidor JB IMPORTES"
+
+4. IMPORTANTE:
+
+   - O arquivo "produtos.json" é onde todos os produtos são armazenados
+   - Qualquer alteração feita por um usuário afeta todos os outros
+   - Para fazer backup dos dados, copie o arquivo "produtos.json"
+   - Para encerrar o servidor, pressione CTRL+C no terminal 
