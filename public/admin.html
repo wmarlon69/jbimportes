@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administração - JB IMPORTES</title>
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        /* Estilos específicos para a página de administração */
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #000000;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #000000;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #000000;
+            border-radius: 4px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            background-color: #000000;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            background-color: #333333;
+        }
+        
+        .btn-danger {
+            background-color: #000000;
+            color: #ffffff;
+        }
+        
+        .btn-danger:hover {
+            background-color: #333333;
+        }
+        
+        .admin-section {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .produto-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .produto-item:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .produto-item img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        
+        .produto-info {
+            flex-grow: 1;
+            margin: 0 10px;
+        }
+        
+        .produto-info h3 {
+            color: #000000;
+            margin: 0;
+        }
+        
+        .produto-info p {
+            color: #000000;
+            margin: 5px 0;
+        }
+        
+        .produto-acoes {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .login-form {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            color: #000000;
+        }
+        
+        .login-form h2 {
+            color: #000000;
+            margin-bottom: 20px;
+        }
+        
+        .login-container {
+            color: #000000;
+        }
+        
+        .login-container label {
+            color: #000000;
+        }
+        
+        .alert {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+        
+        .alert-danger {
+            background-color: #ffffff;
+            color: #000000;
+            border: 1px solid #000000;
+        }
+        
+        .alert-success {
+            background-color: #ffffff;
+            color: #000000;
+            border: 1px solid #000000;
+        }
+        
+        #preview-imagem {
+            max-width: 200px;
+            max-height: 200px;
+            margin-top: 10px;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .tab {
+            padding: 10px 15px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-bottom: none;
+            margin-right: 5px;
+            color: #000000;
+        }
+        
+        .tab.active {
+            border-color: #000000;
+            border-radius: 4px 4px 0 0;
+            background-color: #ffffff;
+            margin-bottom: -1px;
+            color: #000000;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .admin-header h1 {
+            color: #000000;
+        }
+        
+        .admin-section h2 {
+            color: #000000;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container" id="login-section">
+        <div class="login-form">
+            <h2>Login de Administrador</h2>
+            <div id="login-error" class="alert alert-danger" style="display: none;"></div>
+            <div class="form-group">
+                <label for="senha-admin">Senha de Administrador:</label>
+                <input type="password" id="senha-admin" class="form-control">
+            </div>
+            <button onclick="tentarLogin()" class="btn">Entrar</button>
+        </div>
+    </div>
+
+    <div class="admin-container" id="admin-section" style="display: none;">
+        <div class="admin-header">
+            <h1>Administração - JB IMPORTES</h1>
+            <div>
+                <button id="btn-logout" class="btn btn-danger">Sair</button>
+            </div>
+        </div>
+        
+        <div class="tabs">
+            <div class="tab active" data-tab="produtos">Produtos</div>
+            <div class="tab" data-tab="config">Configurações</div>
+            <div class="tab" data-tab="backup">Backup</div>
+        </div>
+        
+        <div class="tab-content active" id="tab-produtos">
+            <div class="admin-section">
+                <h2>Adicionar/Editar Produto</h2>
+                <div id="form-error" class="alert alert-danger" style="display: none;"></div>
+                <div id="form-success" class="alert alert-success" style="display: none;"></div>
+                
+                <form id="form-produto" onsubmit="return false;">
+                    <input type="hidden" id="produto-id">
+                    
+                    <div class="form-group">
+                        <label for="produto-nome">Nome do Produto:</label>
+                        <input type="text" id="produto-nome" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="produto-preco">Preço (R$):</label>
+                        <input type="number" id="produto-preco" class="form-control" step="0.01" min="0" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="produto-categoria">Categoria:</label>
+                        <select id="produto-categoria" class="form-control" required>
+                            <option value="">Selecione</option>
+                            <option value="infantil">Infantil</option>
+                            <option value="feminino">Feminino</option>
+                            <option value="masculino">Masculino</option>
+                            <option value="acessorios">Acessórios</option>
+                            <option value="outros">Outros</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="produto-descricao">Descrição:</label>
+                        <textarea id="produto-descricao" class="form-control" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="produto-imagem">URL da Imagem:</label>
+                        <input type="text" id="produto-imagem" class="form-control" required>
+                        <img id="preview-imagem" style="display: none;">
+                    </div>
+                    
+                    <button type="button" class="btn" id="btn-salvar" onclick="salvarProduto()">Salvar Produto</button>
+                    <button type="button" class="btn btn-danger" id="btn-cancelar" style="display: none;">Cancelar</button>
+                </form>
+            </div>
+            
+            <div class="admin-section">
+                <h2>Lista de Produtos</h2>
+                <div id="lista-produtos"></div>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="tab-config">
+            <div class="admin-section">
+                <h2>Configurações</h2>
+                <div class="form-group">
+                    <label for="nova-senha">Nova Senha de Administrador:</label>
+                    <input type="password" id="nova-senha" class="form-control">
+                </div>
+                <button id="btn-alterar-senha" class="btn">Alterar Senha</button>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="tab-backup">
+            <div class="admin-section">
+                <h2>Backup de Dados</h2>
+                <button id="btn-backup" class="btn">Fazer Backup</button>
+                <button id="btn-restaurar" class="btn">Restaurar Backup</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variável para armazenar a senha do administrador
+        let adminPassword = '';
+
+        // Função de login simplificada
+        async function tentarLogin() {
+            console.log("Função de login chamada");
+            const senhaInput = document.getElementById('senha-admin');
+            const senha = senhaInput.value;
+            console.log("Senha digitada:", senha);
+            
+            if (!senha) {
+                const errorElement = document.getElementById('login-error');
+                errorElement.textContent = 'Digite a senha';
+                errorElement.style.display = 'block';
+                return;
+            }
+            
+            try {
+                // Abordagem mais simples: usar a senha fixa definida no arquivo config.js
+                // Esta é uma solução temporária até resolver os problemas de API
+                if (senha === "123456") {  // Senha definida em config.js
+                    console.log("Login bem-sucedido com senha local!");
+                    adminPassword = senha;
+                    document.getElementById('login-section').style.display = 'none';
+                    document.getElementById('admin-section').style.display = 'block';
+                    carregarProdutos();
+                } else {
+                    console.log("Login falhou com senha local.");
+                    const errorElement = document.getElementById('login-error');
+                    errorElement.textContent = 'Senha incorreta';
+                    errorElement.style.display = 'block';
+                }
+            } catch (error) {
+                console.error("Erro durante o login:", error);
+                const errorElement = document.getElementById('login-error');
+                errorElement.textContent = 'Erro ao fazer login: ' + error.message;
+                errorElement.style.display = 'block';
+            }
+        }
+
+        // Permitir login com a tecla Enter
+        document.getElementById('senha-admin').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                tentarLogin();
+            }
+        });
+
+        // Função para fazer logout
+        document.getElementById('btn-logout').addEventListener('click', function() {
+            adminPassword = '';
+            document.getElementById('login-section').style.display = 'block';
+            document.getElementById('admin-section').style.display = 'none';
+            document.getElementById('senha-admin').value = '';
+            document.getElementById('login-error').style.display = 'none';
+        });
+
+        // Função para formatar preço
+        function formatarPreco(preco) {
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            }).format(preco);
+        }
+
+        // Função para carregar produtos
+        async function carregarProdutos() {
+            try {
+                const response = await fetch('/api/produtos');
+                if (!response.ok) {
+                    throw new Error('Erro ao carregar produtos');
+                }
+                const produtos = await response.json();
+                
+                const listaProdutos = document.getElementById('lista-produtos');
+                
+                if (produtos.length === 0) {
+                    listaProdutos.innerHTML = '<p>Nenhum produto cadastrado.</p>';
+                    return;
+                }
+                
+                listaProdutos.innerHTML = produtos.map(produto => `
+                    <div class="produto-item">
+                        <img src="${produto.imagem}" alt="${produto.nome}" onerror="this.onerror=null; this.src='img/imagem-indisponivel.jpg'; this.alt='Imagem indisponível';">
+                        <div class="produto-info">
+                            <h3>${produto.nome}</h3>
+                            <p>Preço: ${formatarPreco(produto.preco)}</p>
+                            <p>${produto.descricao}</p>
+                            <p>Categoria: ${produto.categoria}</p>
+                        </div>
+                        <div class="produto-acoes">
+                            <button class="btn" onclick="editarProduto('${produto._id}')">Editar</button>
+                            <button class="btn btn-danger" onclick="excluirProduto('${produto._id}')">Excluir</button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Erro ao carregar produtos:', error);
+                document.getElementById('lista-produtos').innerHTML = '<p>Erro ao carregar produtos. Tente novamente.</p>';
+            }
+        }
+
+        // Função para editar produto
+        async function editarProduto(id) {
+            try {
+                const response = await fetch(`/api/produtos/${id}`);
+                if (!response.ok) {
+                    throw new Error('Erro ao carregar produto');
+                }
+                const produto = await response.json();
+                
+                document.getElementById('produto-id').value = produto._id;
+                document.getElementById('produto-nome').value = produto.nome;
+                document.getElementById('produto-preco').value = produto.preco;
+                document.getElementById('produto-categoria').value = produto.categoria;
+                document.getElementById('produto-descricao').value = produto.descricao;
+                document.getElementById('produto-imagem').value = produto.imagem;
+                
+                document.getElementById('btn-cancelar').style.display = 'inline-block';
+                document.getElementById('btn-salvar').textContent = 'Atualizar Produto';
+                
+                if (produto.imagem) {
+                    const previewImagem = document.getElementById('preview-imagem');
+                    previewImagem.src = produto.imagem;
+                    previewImagem.style.display = 'block';
+                }
+                
+                document.getElementById('form-produto').scrollIntoView({ behavior: 'smooth' });
+            } catch (error) {
+                console.error('Erro ao carregar produto para edição:', error);
+                alert('Erro ao carregar produto para edição. Tente novamente.');
+            }
+        }
+
+        // Função para excluir produto
+        async function excluirProduto(id) {
+            if (confirm('Tem certeza que deseja excluir este produto?')) {
+                try {
+                    const response = await fetch(`/api/produtos/${id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'x-admin-password': adminPassword
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Erro ao excluir produto');
+                    }
+
+                    alert('Produto excluído com sucesso!');
+                    await carregarProdutos();
+                } catch (error) {
+                    console.error('Erro ao excluir produto:', error);
+                    alert('Erro ao excluir produto. Tente novamente.');
+                }
+            }
+        }
+
+        // Preview da imagem
+        document.getElementById('produto-imagem').addEventListener('input', function(e) {
+            const previewImagem = document.getElementById('preview-imagem');
+            const url = e.target.value;
+            
+            if (url) {
+                previewImagem.src = url;
+                previewImagem.style.display = 'block';
+                
+                previewImagem.onerror = function() {
+                    previewImagem.style.display = 'none';
+                    alert('URL da imagem inválida');
+                };
+            } else {
+                previewImagem.style.display = 'none';
+            }
+        });
+
+        // Botão cancelar
+        document.getElementById('btn-cancelar').addEventListener('click', function() {
+            document.getElementById('form-produto').reset();
+            document.getElementById('produto-id').value = '';
+            this.style.display = 'none';
+            document.getElementById('btn-salvar').textContent = 'Salvar Produto';
+            document.getElementById('preview-imagem').style.display = 'none';
+        });
+
+        // Tabs
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Remove active class from all tabs
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                this.classList.add('active');
+                document.getElementById('tab-' + this.dataset.tab).classList.add('active');
+            });
+        });
+
+        // Função para salvar produto
+        async function salvarProduto() {
+            // Validar campos
+            const nome = document.getElementById('produto-nome').value.trim();
+            const precoInput = document.getElementById('produto-preco').value.trim();
+            const categoria = document.getElementById('produto-categoria').value;
+            const descricao = document.getElementById('produto-descricao').value.trim();
+            const imagem = document.getElementById('produto-imagem').value.trim();
+            
+            if (!nome) {
+                alert('Nome do produto é obrigatório');
+                return;
+            }
+            
+            const preco = parseFloat(precoInput);
+            if (isNaN(preco) || preco <= 0) {
+                alert('Preço deve ser um número válido maior que zero');
+                return;
+            }
+            
+            if (!categoria) {
+                alert('Selecione uma categoria');
+                return;
+            }
+            
+            if (!descricao) {
+                alert('Descrição é obrigatória');
+                return;
+            }
+            
+            if (!imagem) {
+                alert('URL da imagem é obrigatória');
+                return;
+            }
+            
+            const produtoId = document.getElementById('produto-id').value;
+            const formData = {
+                nome,
+                preco,
+                categoria,
+                descricao,
+                imagem
+            };
+            
+            console.log('Dados do produto a serem enviados:', formData);
+
+            try {
+                const url = produtoId ? `/api/produtos/${produtoId}` : '/api/produtos';
+                const method = produtoId ? 'PUT' : 'POST';
+                
+                console.log(`Enviando requisição ${method} para ${url}`);
+                console.log('Usando senha:', adminPassword);
+                
+                // Incluir cabeçalho de autenticação
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-admin-password': adminPassword
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                console.log('Status da resposta:', response.status);
+                console.log('URL completa:', response.url);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('Erro recebido do servidor:', errorText);
+                    throw new Error(`Erro ao salvar produto: ${response.status} ${errorText}`);
+                }
+                
+                console.log('Produto salvo com sucesso!');
+                
+                alert('Produto salvo com sucesso!');
+                document.getElementById('form-produto').reset();
+                document.getElementById('produto-id').value = '';
+                document.getElementById('btn-cancelar').style.display = 'none';
+                document.getElementById('btn-salvar').textContent = 'Salvar Produto';
+                document.getElementById('preview-imagem').style.display = 'none';
+                await carregarProdutos();
+            } catch (error) {
+                console.error('Erro ao salvar produto:', error);
+                alert('Erro ao salvar produto: ' + error.message);
+            }
+        }
+
+        // Alterar senha
+        document.getElementById('btn-alterar-senha').addEventListener('click', async function() {
+            const novaSenha = document.getElementById('nova-senha').value;
+            
+            if (!novaSenha) {
+                alert('Digite a nova senha');
+                return;
+            }
+            
+            if (novaSenha.length < 6) {
+                alert('A senha deve ter pelo menos 6 caracteres');
+                return;
+            }
+            
+            alert('Funcionalidade de alteração de senha não implementada ainda');
+        });
+    </script>
+</body>
+</html> 
